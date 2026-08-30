@@ -1,0 +1,123 @@
+using System.Collections.Generic;
+using Mutagen.Bethesda.Skyrim;
+using RecordSynthesisPatcher.Settings;
+
+namespace RecordSynthesisPatcher.Core;
+
+public static partial class FieldRegistry
+{
+    private static void RegisterCatalogEditorIds(
+        ICollection<IFieldBinding> b, PatcherSettings s,
+        IReadOnlyList<IForwardingActionModule> f)
+    {
+        AddEditorId<IActionRecord, IActionRecordGetter>(b, s.AACT.EditorID, "AACT", f);
+        AddEditorId<IActivator, IActivatorGetter>(b, s.ACTI.EditorID, "ACTI", f);
+        AddEditorId<IAddonNode, IAddonNodeGetter>(b, s.ADDN.EditorID, "ADDN", f);
+        AddEditorId<IIngestible, IIngestibleGetter>(b, s.ALCH.EditorID, "ALCH", f);
+        AddEditorId<IAmmunition, IAmmunitionGetter>(b, s.AMMO.EditorID, "AMMO", f);
+        AddEditorId<IAnimatedObject, IAnimatedObjectGetter>(b, s.ANIO.EditorID, "ANIO", f);
+        AddEditorId<IAlchemicalApparatus, IAlchemicalApparatusGetter>(b, s.APPA.EditorID, "APPA", f);
+        AddEditorId<IArtObject, IArtObjectGetter>(b, s.ARTO.EditorID, "ARTO", f);
+        AddEditorId<IAssociationType, IAssociationTypeGetter>(b, s.ASTP.EditorID, "ASTP", f);
+        AddEditorId<IActorValueInformation, IActorValueInformationGetter>(b, s.AVIF.EditorID, "AVIF", f);
+        AddEditorId<IBook, IBookGetter>(b, s.BOOK.EditorID, "BOOK", f);
+        AddEditorId<IBodyPartData, IBodyPartDataGetter>(b, s.BPTD.EditorID, "BPTD", f);
+        AddEditorId<ICameraShot, ICameraShotGetter>(b, s.CAMS.EditorID, "CAMS", f);
+        AddEditorId<IClass, IClassGetter>(b, s.CLAS.EditorID, "CLAS", f);
+        AddEditorId<IColorRecord, IColorRecordGetter>(b, s.CLFM.EditorID, "CLFM", f);
+        AddEditorId<IClimate, IClimateGetter>(b, s.CLMT.EditorID, "CLMT", f);
+        AddEditorId<IConstructibleObject, IConstructibleObjectGetter>(b, s.COBJ.EditorID, "COBJ", f);
+        AddEditorId<ICollisionLayer, ICollisionLayerGetter>(b, s.COLL.EditorID, "COLL", f);
+        AddEditorId<ICameraPath, ICameraPathGetter>(b, s.CPTH.EditorID, "CPTH", f);
+        AddEditorId<ICombatStyle, ICombatStyleGetter>(b, s.CSTY.EditorID, "CSTY", f);
+        AddEditorId<IDebris, IDebrisGetter>(b, s.DEBR.EditorID, "DEBR", f);
+        AddEditorId<IDialogTopic, IDialogTopicGetter>(b, s.DIAL.EditorID, "DIAL", f);
+        AddEditorId<IDialogBranch, IDialogBranchGetter>(b, s.DLBR.EditorID, "DLBR", f);
+        AddEditorId<IDialogView, IDialogViewGetter>(b, s.DLVW.EditorID, "DLVW", f);
+        AddEditorId<IDefaultObjectManager, IDefaultObjectManagerGetter>(b, s.DOBJ.EditorID, "DOBJ", f);
+        AddEditorId<IDoor, IDoorGetter>(b, s.DOOR.EditorID, "DOOR", f);
+        AddEditorId<IDualCastData, IDualCastDataGetter>(b, s.DUAL.EditorID, "DUAL", f);
+        AddEditorId<IEncounterZone, IEncounterZoneGetter>(b, s.ECZN.EditorID, "ECZN", f);
+        AddEditorId<IEffectShader, IEffectShaderGetter>(b, s.EFSH.EditorID, "EFSH", f);
+        AddEditorId<IObjectEffect, IObjectEffectGetter>(b, s.ENCH.EditorID, "ENCH", f);
+        AddEditorId<IEquipType, IEquipTypeGetter>(b, s.EQUP.EditorID, "EQUP", f);
+        AddEditorId<IExplosion, IExplosionGetter>(b, s.EXPL.EditorID, "EXPL", f);
+        AddEditorId<IEyes, IEyesGetter>(b, s.EYES.EditorID, "EYES", f);
+        AddEditorId<IFlora, IFloraGetter>(b, s.FLOR.EditorID, "FLOR", f);
+        AddEditorId<IFootstep, IFootstepGetter>(b, s.FSTP.EditorID, "FSTP", f);
+        AddEditorId<IFootstepSet, IFootstepSetGetter>(b, s.FSTS.EditorID, "FSTS", f);
+        AddEditorId<IFurniture, IFurnitureGetter>(b, s.FURN.EditorID, "FURN", f);
+        AddEditorId<IGameSettingBool, IGameSettingBoolGetter>(b, s.GMST.EditorID, "GMST", f);
+        AddEditorId<IGameSettingFloat, IGameSettingFloatGetter>(b, s.GMST.EditorID, "GMST", f);
+        AddEditorId<IGameSettingInt, IGameSettingIntGetter>(b, s.GMST.EditorID, "GMST", f);
+        AddEditorId<IGameSettingString, IGameSettingStringGetter>(b, s.GMST.EditorID, "GMST", f);
+        AddEditorId<IGrass, IGrassGetter>(b, s.GRAS.EditorID, "GRAS", f);
+        AddEditorId<IHair, IHairGetter>(b, s.HAIR.EditorID, "HAIR", f);
+        AddEditorId<IHazard, IHazardGetter>(b, s.HAZD.EditorID, "HAZD", f);
+        AddEditorId<IHeadPart, IHeadPartGetter>(b, s.HDPT.EditorID, "HDPT", f);
+        AddEditorId<IIdleAnimation, IIdleAnimationGetter>(b, s.IDLE.EditorID, "IDLE", f);
+        AddEditorId<IIdleMarker, IIdleMarkerGetter>(b, s.IDLM.EditorID, "IDLM", f);
+        AddEditorId<IImageSpaceAdapter, IImageSpaceAdapterGetter>(b, s.IMAD.EditorID, "IMAD", f);
+        AddEditorId<IImageSpace, IImageSpaceGetter>(b, s.IMGS.EditorID, "IMGS", f);
+        AddEditorId<IDialogResponses, IDialogResponsesGetter>(b, s.INFO.EditorID, "INFO", f);
+        AddEditorId<IImpactDataSet, IImpactDataSetGetter>(b, s.IPDS.EditorID, "IPDS", f);
+        AddEditorId<IKeyword, IKeywordGetter>(b, s.KYWD.EditorID, "KYWD", f);
+        AddEditorId<ILandscape, ILandscapeGetter>(b, s.LAND.EditorID, "LAND", f);
+        AddEditorId<ILocationReferenceType, ILocationReferenceTypeGetter>(b, s.LCRT.EditorID, "LCRT", f);
+        AddEditorId<ILensFlare, ILensFlareGetter>(b, s.LENS.EditorID, "LENS", f);
+        AddEditorId<ILightingTemplate, ILightingTemplateGetter>(b, s.LGTM.EditorID, "LGTM", f);
+        AddEditorId<ILight, ILightGetter>(b, s.LIGH.EditorID, "LIGH", f);
+        AddEditorId<ILoadScreen, ILoadScreenGetter>(b, s.LSCR.EditorID, "LSCR", f);
+        AddEditorId<ILandscapeTexture, ILandscapeTextureGetter>(b, s.LTEX.EditorID, "LTEX", f);
+        AddEditorId<ILeveledSpell, ILeveledSpellGetter>(b, s.LVSP.EditorID, "LVSP", f);
+        AddEditorId<IMaterialObject, IMaterialObjectGetter>(b, s.MATO.EditorID, "MATO", f);
+        AddEditorId<IMaterialType, IMaterialTypeGetter>(b, s.MATT.EditorID, "MATT", f);
+        AddEditorId<IMessage, IMessageGetter>(b, s.MESG.EditorID, "MESG", f);
+        AddEditorId<IMiscItem, IMiscItemGetter>(b, s.MISC.EditorID, "MISC", f);
+        AddEditorId<IMovementType, IMovementTypeGetter>(b, s.MOVT.EditorID, "MOVT", f);
+        AddEditorId<IMoveableStatic, IMoveableStaticGetter>(b, s.MSTT.EditorID, "MSTT", f);
+        AddEditorId<IMusicType, IMusicTypeGetter>(b, s.MUSC.EditorID, "MUSC", f);
+        AddEditorId<IMusicTrack, IMusicTrackGetter>(b, s.MUST.EditorID, "MUST", f);
+        AddEditorId<INavigationMeshInfoMap, INavigationMeshInfoMapGetter>(b, s.NAVI.EditorID, "NAVI", f);
+        AddEditorId<INavigationMesh, INavigationMeshGetter>(b, s.NAVM.EditorID, "NAVM", f);
+        AddEditorId<IPackage, IPackageGetter>(b, s.PACK.EditorID, "PACK", f);
+        AddEditorId<IPlacedArrow, IPlacedArrowGetter>(b, s.PARW.EditorID, "PARW", f);
+        AddEditorId<IPlacedBarrier, IPlacedBarrierGetter>(b, s.PBAR.EditorID, "PBAR", f);
+        AddEditorId<IPlacedBeam, IPlacedBeamGetter>(b, s.PBEA.EditorID, "PBEA", f);
+        AddEditorId<IPlacedCone, IPlacedConeGetter>(b, s.PCON.EditorID, "PCON", f);
+        AddEditorId<IPerk, IPerkGetter>(b, s.PERK.EditorID, "PERK", f);
+        AddEditorId<IPlacedFlame, IPlacedFlameGetter>(b, s.PFLA.EditorID, "PFLA", f);
+        AddEditorId<IPlacedTrap, IPlacedTrapGetter>(b, s.PGRE.EditorID, "PGRE", f);
+        AddEditorId<IPlacedHazard, IPlacedHazardGetter>(b, s.PHZD.EditorID, "PHZD", f);
+        AddEditorId<IPlacedMissile, IPlacedMissileGetter>(b, s.PMIS.EditorID, "PMIS", f);
+        AddEditorId<IProjectile, IProjectileGetter>(b, s.PROJ.EditorID, "PROJ", f);
+        AddEditorId<IQuest, IQuestGetter>(b, s.QUST.EditorID, "QUST", f);
+        AddEditorId<IRace, IRaceGetter>(b, s.RACE.EditorID, "RACE", f);
+        AddEditorId<IRegion, IRegionGetter>(b, s.REGN.EditorID, "REGN", f);
+        AddEditorId<IRelationship, IRelationshipGetter>(b, s.RELA.EditorID, "RELA", f);
+        AddEditorId<IReverbParameters, IReverbParametersGetter>(b, s.REVB.EditorID, "REVB", f);
+        AddEditorId<IVisualEffect, IVisualEffectGetter>(b, s.RFCT.EditorID, "RFCT", f);
+        AddEditorId<IScene, ISceneGetter>(b, s.SCEN.EditorID, "SCEN", f);
+        AddEditorId<IScroll, IScrollGetter>(b, s.SCRL.EditorID, "SCRL", f);
+        AddEditorId<IShout, IShoutGetter>(b, s.SHOU.EditorID, "SHOU", f);
+        AddEditorId<ISoulGem, ISoulGemGetter>(b, s.SLGM.EditorID, "SLGM", f);
+        AddEditorId<IStoryManagerBranchNode, IStoryManagerBranchNodeGetter>(b, s.SMBN.EditorID, "SMBN", f);
+        AddEditorId<IStoryManagerEventNode, IStoryManagerEventNodeGetter>(b, s.SMEN.EditorID, "SMEN", f);
+        AddEditorId<IStoryManagerQuestNode, IStoryManagerQuestNodeGetter>(b, s.SMQN.EditorID, "SMQN", f);
+        AddEditorId<ISoundCategory, ISoundCategoryGetter>(b, s.SNCT.EditorID, "SNCT", f);
+        AddEditorId<ISoundOutputModel, ISoundOutputModelGetter>(b, s.SOPM.EditorID, "SOPM", f);
+        AddEditorId<ISoundMarker, ISoundMarkerGetter>(b, s.SOUN.EditorID, "SOUN", f);
+        AddEditorId<IShaderParticleGeometry, IShaderParticleGeometryGetter>(b, s.SPGD.EditorID, "SPGD", f);
+        AddEditorId<IStatic, IStaticGetter>(b, s.STAT.EditorID, "STAT", f);
+        AddEditorId<ITalkingActivator, ITalkingActivatorGetter>(b, s.TACT.EditorID, "TACT", f);
+        AddEditorId<ITree, ITreeGetter>(b, s.TREE.EditorID, "TREE", f);
+        AddEditorId<ITextureSet, ITextureSetGetter>(b, s.TXST.EditorID, "TXST", f);
+        AddEditorId<IVolumetricLighting, IVolumetricLightingGetter>(b, s.VOLI.EditorID, "VOLI", f);
+        AddEditorId<IVoiceType, IVoiceTypeGetter>(b, s.VTYP.EditorID, "VTYP", f);
+        AddEditorId<IWater, IWaterGetter>(b, s.WATR.EditorID, "WATR", f);
+        AddEditorId<IWeapon, IWeaponGetter>(b, s.WEAP.EditorID, "WEAP", f);
+        AddEditorId<IWordOfPower, IWordOfPowerGetter>(b, s.WOOP.EditorID, "WOOP", f);
+        AddEditorId<IWeather, IWeatherGetter>(b, s.WTHR.EditorID, "WTHR", f);
+    }
+}
+

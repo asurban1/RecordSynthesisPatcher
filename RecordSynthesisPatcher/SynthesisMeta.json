@@ -1,0 +1,11 @@
+{
+  "Nickname": "RecordSynthesisPatcher",
+  "Visibility": "Visible",
+  "OneLineDescription": "Configurable Skyrim conflict-resolution patcher with per-field forwarding and branch-aware merging.",
+  "LongDescription": "Choose individual record fields to forward or merge. The patcher respects intentional additions, removals, blank values, and independent load-order branches while producing a patch tailored to the current load order.",
+  "PreferredAutoVersioning": "Default",
+  "RequiredMods": [],
+  "TargetedReleases": [
+    "SkyrimSE"
+  ]
+}
