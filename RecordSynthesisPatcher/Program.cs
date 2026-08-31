@@ -27,6 +27,11 @@ public static class Program
     public static void RunPatch(
         IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
     {
+        // RSP creates overrides of existing records rather than new FormKeys,
+        // so its output is safe to load as an ESL-flagged ESP.
+        state.PatchMod.ModHeader.Flags |=
+            SkyrimModHeader.HeaderFlag.Small;
+
         new PatcherEngine(
             state,
             state.PatchMod,
@@ -34,4 +39,3 @@ public static class Program
             .Run();
     }
 }
- 
