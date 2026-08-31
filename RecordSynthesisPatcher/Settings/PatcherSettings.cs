@@ -227,12 +227,15 @@ public sealed partial class AchrForwardingSettings
     [SynthesisOrder]
     public bool LevelModifier = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Linked References — [ MERGE ]")]
     public bool LinkedReferencesMerge = false;
     [SynthesisOrder]
     public bool LocationReference = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Location Ref Types — [ MERGE ]")]
     public bool LocationRefTypesMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool MerchantContainer = false;
@@ -265,14 +268,17 @@ public sealed partial class ActiForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool InteractionKeyword = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
     public bool LoopingSound = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool MarkerColor = false;
@@ -289,6 +295,7 @@ public sealed partial class AddnForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool MasterParticleSystemCap = false;
@@ -315,6 +322,7 @@ public sealed partial class AlchForwardingSettings
     [SynthesisOrder]
     public bool EquipmentType = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -341,10 +349,13 @@ public sealed partial class AmmoForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -397,12 +408,14 @@ public sealed partial class AppaForwardingSettings
 public sealed partial class ArmaForwardingSettings
 {
     [SynthesisOrder]
+    [SynthesisSettingName("Additional Races — [ MERGE ]")]
     public bool AdditionalRacesMerge = false;
     [SynthesisOrder]
     public bool ArtObject = false;
     [SynthesisOrder]
     public bool BipedBodyTemplateArmorType = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Biped Body Template First Person Flags — [ MERGE ]")]
     public bool BipedBodyTemplateFirstPersonFlagsMerge = false;
     [SynthesisOrder]
     public bool DetectionSoundValue = false;
@@ -427,6 +440,7 @@ public sealed partial class ArmoForwardingSettings
     [SynthesisOrder]
     public bool AlternateBlockMaterial = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Armature — [ MERGE ]")]
     public bool ArmatureMerge = false;
     [SynthesisOrder]
     public bool ArmorRating = false;
@@ -435,6 +449,7 @@ public sealed partial class ArmoForwardingSettings
     [SynthesisOrder]
     public bool BipedBodyTemplateArmorType = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Biped Body Template First Person Flags — [ MERGE ]")]
     public bool BipedBodyTemplateFirstPersonFlagsMerge = false;
     [SynthesisOrder]
     public bool Description = false;
@@ -445,8 +460,10 @@ public sealed partial class ArmoForwardingSettings
     [SynthesisOrder]
     public bool EquipmentType = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -525,10 +542,12 @@ public sealed partial class BookForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool InventoryArt = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -563,6 +582,7 @@ public sealed partial class CamsForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool ImageSpaceModifier = false;
@@ -599,6 +619,7 @@ public sealed partial class CellForwardingSettings
     [SynthesisOrder]
     public bool FactionRank = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool ImageSpace = false;
@@ -611,6 +632,7 @@ public sealed partial class CellForwardingSettings
     [SynthesisOrder]
     public bool LockList = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool MaxHeightData = false;
@@ -623,6 +645,7 @@ public sealed partial class CellForwardingSettings
     [SynthesisOrder]
     public bool Owner = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Regions — [ MERGE ]")]
     public bool RegionsMerge = false;
     [SynthesisOrder]
     public bool SkyAndWeatherFromRegion = false;
@@ -705,6 +728,7 @@ public sealed partial class CobjForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Items — [ MERGE ]")]
     public bool ItemsMerge = false;
     [SynthesisOrder]
     public bool WorkbenchKeyword = false;
@@ -719,6 +743,7 @@ public sealed partial class CollForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool Index = false;
@@ -733,10 +758,13 @@ public sealed partial class ContForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Items — [ MERGE ]")]
     public bool ItemsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -783,12 +811,14 @@ public sealed partial class CstyForwardingSettings
     [SynthesisOrder]
     public bool EquipmentScoreMultUnarmed = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool GroupOffensiveMult = false;
     [SynthesisOrder]
     public bool LongRangeStrafeMult = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool OffensiveMult = false;
@@ -817,6 +847,7 @@ public sealed partial class DialForwardingSettings
     [SynthesisOrder]
     public bool Subtype = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Topic Flags — [ MERGE ]")]
     public bool TopicFlagsMerge = false;
 }
 
@@ -827,6 +858,7 @@ public sealed partial class DlbrForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool Quest = false;
@@ -859,10 +891,12 @@ public sealed partial class DoorForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool LoopSound = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -899,6 +933,7 @@ public sealed partial class EcznForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool Location = false;
@@ -1023,6 +1058,7 @@ public sealed partial class EfshForwardingSettings
     [SynthesisOrder]
     public bool FillTextureScaleV = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool HolesEndTime = false;
@@ -1135,6 +1171,7 @@ public sealed partial class EnchForwardingSettings
     [SynthesisOrder]
     public bool ENITDataTypeState = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -1163,6 +1200,7 @@ public sealed partial class ExplForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool Force = false;
@@ -1201,8 +1239,10 @@ public sealed partial class EyesForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -1215,6 +1255,7 @@ public sealed partial class FactForwardingSettings
     [SynthesisOrder]
     public bool ExteriorJailMarker = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool FollowerWaitMarker = false;
@@ -1227,6 +1268,7 @@ public sealed partial class FactForwardingSettings
     [SynthesisOrder]
     public bool PlayerInventoryContainer = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Relations — [ MERGE ]")]
     public bool RelationsMerge = false;
     [SynthesisOrder]
     public bool SharedCrimeFactionList = false;
@@ -1249,6 +1291,7 @@ public sealed partial class FlorForwardingSettings
     [SynthesisOrder]
     public bool Ingredient = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -1263,6 +1306,7 @@ public sealed partial class FlstForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Items — [ MERGE ]")]
     public bool ItemsMerge = false;
 }
 
@@ -1289,12 +1333,15 @@ public sealed partial class FurnForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool InteractionKeyword = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -1311,6 +1358,7 @@ public sealed partial class GlobForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
 }
 
@@ -1331,6 +1379,7 @@ public sealed partial class GrasForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool HeightRange = false;
@@ -1367,6 +1416,7 @@ public sealed partial class HazdForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool ImageSpaceModifier = false;
@@ -1401,8 +1451,10 @@ public sealed partial class HdptForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -1473,6 +1525,7 @@ public sealed partial class InfoForwardingSettings
     [SynthesisOrder]
     public bool FavorLevel = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool PreviousDialog = false;
@@ -1499,6 +1552,7 @@ public sealed partial class IngrForwardingSettings
     [SynthesisOrder]
     public bool IngredientValue = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -1557,8 +1611,10 @@ public sealed partial class KeymForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -1587,6 +1643,7 @@ public sealed partial class LandForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
 }
 
@@ -1607,6 +1664,7 @@ public sealed partial class LctnForwardingSettings
     [SynthesisOrder]
     public bool HorseMarkerRef = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
     public bool Music = false;
@@ -1679,6 +1737,7 @@ public sealed partial class LighForwardingSettings
     [SynthesisOrder]
     public bool FalloffExponent = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool FlickerIntensityAmplitude = false;
@@ -1691,6 +1750,7 @@ public sealed partial class LighForwardingSettings
     [SynthesisOrder]
     public bool Lens = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -1723,6 +1783,7 @@ public sealed partial class LscrForwardingSettings
     [SynthesisOrder]
     public bool LoadingScreenNif = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
 }
 
@@ -1731,6 +1792,7 @@ public sealed partial class LtexForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool HavokFriction = false;
@@ -1751,8 +1813,10 @@ public sealed partial class LvliForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Entries — [ MERGE ]")]
     public bool EntriesMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool Global = false;
@@ -1767,8 +1831,10 @@ public sealed partial class LvlnForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Entries — [ MERGE ]")]
     public bool EntriesMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool Global = false;
@@ -1783,8 +1849,10 @@ public sealed partial class LvspForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Entries — [ MERGE ]")]
     public bool EntriesMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool ObjectBounds = false;
@@ -1801,6 +1869,7 @@ public sealed partial class MatoForwardingSettings
     [SynthesisOrder]
     public bool FalloffScale = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool HasSnow = false;
@@ -1823,6 +1892,7 @@ public sealed partial class MattForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool HavokDisplayColor = false;
@@ -1843,6 +1913,7 @@ public sealed partial class MesgForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool INAM = false;
@@ -1865,6 +1936,7 @@ public sealed partial class MgefForwardingSettings
     [SynthesisOrder]
     public bool CastType = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Counter Effects — [ MERGE ]")]
     public bool CounterEffectsMerge = false;
     [SynthesisOrder]
     public bool Description = false;
@@ -1885,6 +1957,7 @@ public sealed partial class MgefForwardingSettings
     [SynthesisOrder]
     public bool Explosion = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool HitEffectArt = false;
@@ -1897,6 +1970,7 @@ public sealed partial class MgefForwardingSettings
     [SynthesisOrder]
     public bool ImpactData = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
     public bool MagicSkill = false;
@@ -1943,8 +2017,10 @@ public sealed partial class MiscForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -1997,10 +2073,12 @@ public sealed partial class MsttForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool LoopingSound = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -2015,6 +2093,7 @@ public sealed partial class MuscForwardingSettings
     [SynthesisOrder]
     public bool FadeDuration = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
 }
 
@@ -2045,6 +2124,7 @@ public sealed partial class NavmForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool NNAM = false;
@@ -2057,6 +2137,7 @@ public sealed partial class NavmForwardingSettings
 public sealed partial class NpcForwardingSettings
 {
     [SynthesisOrder]
+    [SynthesisSettingName("Actor Effects — [ MERGE ]")]
     public bool ActorEffectsMerge = false;
     [SynthesisOrder]
     public bool AttackRace = false;
@@ -2067,6 +2148,7 @@ public sealed partial class NpcForwardingSettings
     [SynthesisOrder]
     public bool CombatStyle = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Configuration Flags — [ MERGE ]")]
     public bool ConfigurationFlagsMerge = false;
     [SynthesisOrder]
     public bool CrimeFaction = false;
@@ -2079,6 +2161,7 @@ public sealed partial class NpcForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Factions — [ MERGE ]")]
     public bool FactionsMerge = false;
     [SynthesisOrder]
     public bool FarAwayModel = false;
@@ -2089,16 +2172,20 @@ public sealed partial class NpcForwardingSettings
     [SynthesisOrder]
     public bool HairColor = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Head Parts — [ MERGE ]")]
     public bool HeadPartsMerge = false;
     [SynthesisOrder]
     public bool HeadTexture = false;
     [SynthesisOrder]
     public bool Height = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Items — [ MERGE ]")]
     public bool ItemsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool NAM5 = false;
@@ -2109,8 +2196,10 @@ public sealed partial class NpcForwardingSettings
     [SynthesisOrder]
     public bool ObserveDeadBodyOverridePackageList = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Packages — [ MERGE ]")]
     public bool PackagesMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Perks — [ MERGE ]")]
     public bool PerksMerge = false;
     [SynthesisOrder]
     public bool Race = false;
@@ -2139,6 +2228,7 @@ public sealed partial class OtftForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Items — [ MERGE ]")]
     public bool ItemsMerge = false;
 }
 
@@ -2149,8 +2239,10 @@ public sealed partial class PackForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Interrupt Flags — [ MERGE ]")]
     public bool InterruptFlagsMerge = false;
     [SynthesisOrder]
     public bool InterruptOverride = false;
@@ -2199,10 +2291,12 @@ public sealed partial class ParwForwardingSettings
     [SynthesisOrder]
     public bool IgnoredBySandbox = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Linked References — [ MERGE ]")]
     public bool LinkedReferencesMerge = false;
     [SynthesisOrder]
     public bool LocationReference = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool MultiBoundReference = false;
@@ -2231,10 +2325,12 @@ public sealed partial class PbarForwardingSettings
     [SynthesisOrder]
     public bool IgnoredBySandbox = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Linked References — [ MERGE ]")]
     public bool LinkedReferencesMerge = false;
     [SynthesisOrder]
     public bool LocationReference = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool MultiBoundReference = false;
@@ -2263,10 +2359,12 @@ public sealed partial class PbeaForwardingSettings
     [SynthesisOrder]
     public bool IgnoredBySandbox = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Linked References — [ MERGE ]")]
     public bool LinkedReferencesMerge = false;
     [SynthesisOrder]
     public bool LocationReference = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool MultiBoundReference = false;
@@ -2295,10 +2393,12 @@ public sealed partial class PconForwardingSettings
     [SynthesisOrder]
     public bool IgnoredBySandbox = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Linked References — [ MERGE ]")]
     public bool LinkedReferencesMerge = false;
     [SynthesisOrder]
     public bool LocationReference = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool MultiBoundReference = false;
@@ -2321,6 +2421,7 @@ public sealed partial class PerkForwardingSettings
     [SynthesisOrder]
     public bool Level = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -2351,10 +2452,12 @@ public sealed partial class PflaForwardingSettings
     [SynthesisOrder]
     public bool IgnoredBySandbox = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Linked References — [ MERGE ]")]
     public bool LinkedReferencesMerge = false;
     [SynthesisOrder]
     public bool LocationReference = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool MultiBoundReference = false;
@@ -2383,10 +2486,12 @@ public sealed partial class PgreForwardingSettings
     [SynthesisOrder]
     public bool IgnoredBySandbox = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Linked References — [ MERGE ]")]
     public bool LinkedReferencesMerge = false;
     [SynthesisOrder]
     public bool LocationReference = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool MultiBoundReference = false;
@@ -2417,10 +2522,12 @@ public sealed partial class PhzdForwardingSettings
     [SynthesisOrder]
     public bool IgnoredBySandbox = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Linked References — [ MERGE ]")]
     public bool LinkedReferencesMerge = false;
     [SynthesisOrder]
     public bool LocationReference = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool MultiBoundReference = false;
@@ -2447,10 +2554,12 @@ public sealed partial class PmisForwardingSettings
     [SynthesisOrder]
     public bool IgnoredBySandbox = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Linked References — [ MERGE ]")]
     public bool LinkedReferencesMerge = false;
     [SynthesisOrder]
     public bool LocationReference = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool MultiBoundReference = false;
@@ -2491,6 +2600,7 @@ public sealed partial class ProjForwardingSettings
     [SynthesisOrder]
     public bool FadeDuration = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool Gravity = false;
@@ -2535,6 +2645,7 @@ public sealed partial class QustForwardingSettings
     [SynthesisOrder]
     public bool Filter = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -2581,6 +2692,7 @@ public sealed partial class RaceForwardingSettings
     [SynthesisOrder]
     public bool BipedBodyTemplateArmorType = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Biped Body Template First Person Flags — [ MERGE ]")]
     public bool BipedBodyTemplateFirstPersonFlagsMerge = false;
     [SynthesisOrder]
     public bool BodyBipedObject = false;
@@ -2599,6 +2711,7 @@ public sealed partial class RaceForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Equipment Flags — [ MERGE ]")]
     public bool EquipmentFlagsMerge = false;
     [SynthesisOrder]
     public bool ExportingExtraNam2 = false;
@@ -2607,6 +2720,7 @@ public sealed partial class RaceForwardingSettings
     [SynthesisOrder]
     public bool FacegenMainClamp = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool FlightRadius = false;
@@ -2619,8 +2733,10 @@ public sealed partial class RaceForwardingSettings
     [SynthesisOrder]
     public bool InjuredHealthPercent = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool MaterialType = false;
@@ -2677,6 +2793,7 @@ public sealed partial class RefrForwardingSettings
     [SynthesisOrder]
     public bool FavorCost = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool HeadTrackingWeight = false;
@@ -2697,14 +2814,18 @@ public sealed partial class RefrForwardingSettings
     [SynthesisOrder]
     public bool LightingTemplate = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Linked References — [ MERGE ]")]
     public bool LinkedReferencesMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Linked Rooms — [ MERGE ]")]
     public bool LinkedRoomsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Lit Water — [ MERGE ]")]
     public bool LitWaterMerge = false;
     [SynthesisOrder]
     public bool LocationReference = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Location Ref Types — [ MERGE ]")]
     public bool LocationRefTypesMerge = false;
     [SynthesisOrder]
     public bool Lock = false;
@@ -2767,6 +2888,7 @@ public sealed partial class RegnForwardingSettings
     [SynthesisOrder]
     public bool Land = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Map = false;
@@ -2791,8 +2913,10 @@ public sealed partial class RelaForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Parent = false;
@@ -2839,6 +2963,7 @@ public sealed partial class RfctForwardingSettings
     [SynthesisOrder]
     public bool EffectArt = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool Shader = false;
@@ -2849,6 +2974,7 @@ public sealed partial class ScenForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool LastActionIndex = false;
@@ -2875,10 +3001,12 @@ public sealed partial class ScrlForwardingSettings
     [SynthesisOrder]
     public bool EquipmentType = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool HalfCostPerk = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
     public bool MenuDisplayObject = false;
@@ -2909,6 +3037,7 @@ public sealed partial class ShouForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool MenuDisplayObject = false;
@@ -2923,10 +3052,12 @@ public sealed partial class SlgmForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
     public bool LinkedTo = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool MaximumCapacity = false;
@@ -2949,6 +3080,7 @@ public sealed partial class SmbnForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool MaxConcurrentQuests = false;
@@ -2963,6 +3095,7 @@ public sealed partial class SmenForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool MaxConcurrentQuests = false;
@@ -2979,6 +3112,7 @@ public sealed partial class SmqnForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool MaxConcurrentQuests = false;
@@ -2989,6 +3123,7 @@ public sealed partial class SmqnForwardingSettings
     [SynthesisOrder]
     public bool PreviousSibling = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Quest Flags — [ MERGE ]")]
     public bool QuestFlagsMerge = false;
 }
 
@@ -2999,6 +3134,7 @@ public sealed partial class SnctForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -3079,10 +3215,12 @@ public sealed partial class SpelForwardingSettings
     [SynthesisOrder]
     public bool EquipmentType = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool HalfCostPerk = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
     public bool MenuDisplayObject = false;
@@ -3137,8 +3275,10 @@ public sealed partial class StatForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Material = false;
@@ -3157,10 +3297,12 @@ public sealed partial class TactForwardingSettings
     [SynthesisOrder]
     public bool FNAM = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
     public bool LoopingSound = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -3185,6 +3327,7 @@ public sealed partial class TreeForwardingSettings
     [SynthesisOrder]
     public bool LeafFrequency = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -3201,6 +3344,7 @@ public sealed partial class TxstForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool ObjectBounds = false;
@@ -3241,6 +3385,7 @@ public sealed partial class VtypForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
 }
 
@@ -3275,6 +3420,7 @@ public sealed partial class WatrForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool FogAboveWaterAmount = false;
@@ -3401,8 +3547,10 @@ public sealed partial class WeapForwardingSettings
     [SynthesisOrder]
     public bool ImpactDataSet = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Keywords — [ MERGE ]")]
     public bool KeywordsMerge = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Name = false;
@@ -3445,6 +3593,7 @@ public sealed partial class WrldForwardingSettings
     [SynthesisOrder]
     public bool FixedDimensionsCenterCell = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool InteriorLighting = false;
@@ -3455,6 +3604,7 @@ public sealed partial class WrldForwardingSettings
     [SynthesisOrder]
     public bool LodWaterHeight = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Major Flags — [ MERGE ]")]
     public bool MajorFlagsMerge = false;
     [SynthesisOrder]
     public bool Music = false;
@@ -3495,6 +3645,7 @@ public sealed partial class WthrForwardingSettings
     [SynthesisOrder]
     public bool EditorID = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
     [SynthesisOrder]
     public bool FogDistanceDayFar = false;
