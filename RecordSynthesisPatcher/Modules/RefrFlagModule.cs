@@ -15,6 +15,7 @@ public sealed class RefrFlagModule : PatcherModule,
     private const int Persistent = 0x00000400;
     private const int InitiallyDisabled = 0x00000800;
     private const int VisibleWhenDistant = 0x00008000;
+    private const int IsFullLod = 0x00010000;
     private const int ReflectedByAutoWater = 0x10000000;
     private const int DontHavokSettle = 0x20000000;
     private const int NoRespawn = 0x40000000;
@@ -24,6 +25,7 @@ public sealed class RefrFlagModule : PatcherModule,
         Persistent |
         InitiallyDisabled |
         VisibleWhenDistant |
+        IsFullLod |
         ReflectedByAutoWater |
         DontHavokSettle |
         NoRespawn;

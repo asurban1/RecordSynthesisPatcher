@@ -286,10 +286,7 @@ public sealed class PositionRotationModule : PatcherModule,
     private sealed class RotationComparer : IEqualityComparer<float?>
     {
         private const float FullCircle = MathF.PI * 2f;
-        // Keep enough tolerance for equivalent +/- full-circle float
-        // encodings, but do not swallow a one-unit xEdit display change
-        // (0.0001 degree is about 0.000001745 radians).
-        private const float Tolerance = 0.0000012f;
+        private const float FullTurnTolerance = 0.0000012f;
 
         public static readonly RotationComparer Instance = new();
 
@@ -298,17 +295,21 @@ public sealed class PositionRotationModule : PatcherModule,
             if (!left.HasValue || !right.HasValue)
                 return left.HasValue == right.HasValue;
 
-            float difference = MathF.Abs(Normalize(left.Value) - Normalize(right.Value));
-            difference = MathF.Min(difference, FullCircle - difference);
-            return difference <= Tolerance;
+            float difference = left.Value - right.Value;
+            if (difference.Equals(0f))
+                return true;
+
+            // Use tolerance only to absorb float error around a genuine full
+            // turn. Near-zero differences are always meaningful, including
+            // edits that straddle xEdit's four-decimal display boundary.
+            float turns = MathF.Round(difference / FullCircle);
+            if (turns.Equals(0f))
+                return false;
+
+            float remainder = difference - (turns * FullCircle);
+            return MathF.Abs(remainder) <= FullTurnTolerance;
         }
 
         public int GetHashCode(float? value) => 0;
-
-        private static float Normalize(float value)
-        {
-            float normalized = value % FullCircle;
-            return normalized < 0f ? normalized + FullCircle : normalized;
-        }
     }
 }
