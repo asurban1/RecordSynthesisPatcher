@@ -31,14 +31,31 @@ No manual download, Visual Studio project setup, or compilation is necessary.
 
 ## What it does
 
-- Forwards selected values from meaningful conflict-winning branches.
+- Forwards a selected field only when the winning override carries the
+  inherited/original value while a different value still survives on an
+  independent conflict branch.
 - Merges supported collections such as keywords, leveled entries, linked references, and region data.
 - Handles supported record flags bit by bit so additions and removals can both be preserved.
 - Treats blank and null values as real values instead of assuming they are defaults.
 - Respects intentional changes and removals made by descendant plugins.
 - Registers compatible fields across every supported record type that exposes them.
 
-Fields are organized alphabetically by record type and field name. Merge options are marked with **(merge)** in the settings.
+### Forwarding behavior
+
+Forwarding is deliberately narrow: it repairs a field that was reset to its
+inherited baseline by the winning record. For example, if one plugin changes a
+field from the original value and a later, independent plugin wins the record
+while retaining the original value for that field, RSP forwards the surviving
+change. If the winning plugin supplies its own changed value, RSP leaves that
+winning value in place.
+
+In this description, *default* means the value inherited from the record's
+origin or parent branch. It does not mean a C# data-type default. A blank,
+`null`, zero, `false`, or other apparently empty value remains meaningful when
+a plugin deliberately changed the field to that value.
+
+Fields are organized alphabetically by record type and field name. Merge
+options are marked with **— [ MERGE ]** in the settings.
 
 ## Configuration
 

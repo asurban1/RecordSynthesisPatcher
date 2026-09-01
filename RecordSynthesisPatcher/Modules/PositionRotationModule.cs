@@ -57,7 +57,7 @@ public sealed class PositionRotationModule : PatcherModule,
             $"  Position components forwarded: {_positionComponents:N0}; " +
             $"rotation components forwarded: {_rotationComponents:N0}.");
         Console.WriteLine(
-            $"  Safe-disabled (-30000 Z) records skipped: " +
+            $"  Safe-disabled (-30000 Z) position fields skipped: " +
             $"{_safeDisabledSkipped:N0}.");
     }
 
@@ -77,58 +77,30 @@ public sealed class PositionRotationModule : PatcherModule,
         if (originalPlacement is null)
             return;
 
-        // A safe-disabled reference must never be revived by transform recovery.
-        foreach (var context in item.Contexts)
-        {
-            if (context.Record.Placement is { } placement &&
-                SameValue(placement.Position.Z, SafeDisableZ))
-            {
-                _safeDisabledSkipped++;
-                return;
-            }
-        }
+        bool skipPosition = forwardPosition && HasSafeDisableZ(item);
+        if (skipPosition)
+            _safeDisabledSkipped++;
 
-        AxisResolution xResult = forwardPosition
-            ? ResolveAxis(item, PlacementAxis.PositionX)
+        PairResolution positionPairResult = forwardPosition && !skipPosition
+            ? ResolvePair(item, PlacementPair.Position)
             : default;
-        AxisResolution yResult = forwardPosition
-            ? ResolveAxis(item, PlacementAxis.PositionY)
-            : default;
-
-        // Never synthesize horizontal coordinates from two different mods.
-        // When independent branches change one axis each, the higher-priority
-        // branch wins and the other component remains with the record winner.
-        if (xResult.Use && yResult.Use &&
-            xResult.SourceIndex != yResult.SourceIndex)
-        {
-            if (xResult.SourceIndex < yResult.SourceIndex)
-                yResult = default;
-            else
-                xResult = default;
-        }
-
-        AxisResolution zResult = forwardPosition
+        AxisResolution positionZResult = forwardPosition && !skipPosition
             ? ResolveAxis(item, PlacementAxis.PositionZ)
             : default;
-        AxisResolution rotationXResult = forwardRotation
-            ? ResolveAxis(item, PlacementAxis.RotationX)
-            : default;
-        AxisResolution rotationYResult = forwardRotation
-            ? ResolveAxis(item, PlacementAxis.RotationY)
+        PairResolution rotationPairResult = forwardRotation
+            ? ResolvePair(item, PlacementPair.Rotation)
             : default;
         AxisResolution rotationZResult = forwardRotation
             ? ResolveAxis(item, PlacementAxis.RotationZ)
             : default;
 
-        bool useX = xResult.Use;
-        bool useY = yResult.Use;
-        bool useZ = zResult.Use;
-        bool useRotationX = rotationXResult.Use;
-        bool useRotationY = rotationYResult.Use;
+        bool usePositionPair = positionPairResult.Use;
+        bool usePositionZ = positionZResult.Use;
+        bool useRotationPair = rotationPairResult.Use;
         bool useRotationZ = rotationZResult.Use;
 
-        if (!useX && !useY && !useZ &&
-            !useRotationX && !useRotationY && !useRotationZ)
+        if (!usePositionPair && !usePositionZ &&
+            !useRotationPair && !useRotationZ)
         {
             return;
         }
@@ -137,29 +109,30 @@ public sealed class PositionRotationModule : PatcherModule,
         if (patchPlacement is null)
             return;
 
-        if (useX || useY || useZ)
+        if (usePositionPair || usePositionZ)
         {
             var existing = patchPlacement.Position;
             patchPlacement.Position = new P3Float(
-                useX ? xResult.Value : existing.X,
-                useY ? yResult.Value : existing.Y,
-                useZ ? zResult.Value : existing.Z);
+                usePositionPair ? positionPairResult.Value.X : existing.X,
+                usePositionPair ? positionPairResult.Value.Y : existing.Y,
+                usePositionZ ? positionZResult.Value : existing.Z);
 
-            _positionComponents += BoolCount(useX, useY, useZ);
+            _positionComponents +=
+                (usePositionPair ? 2 : 0) +
+                (usePositionZ ? 1 : 0);
         }
 
-        if (useRotationX || useRotationY || useRotationZ)
+        if (useRotationPair || useRotationZ)
         {
             var existing = patchPlacement.Rotation;
             patchPlacement.Rotation = new P3Float(
-                useRotationX ? rotationXResult.Value : existing.X,
-                useRotationY ? rotationYResult.Value : existing.Y,
+                useRotationPair ? rotationPairResult.Value.X : existing.X,
+                useRotationPair ? rotationPairResult.Value.Y : existing.Y,
                 useRotationZ ? rotationZResult.Value : existing.Z);
 
-            _rotationComponents += BoolCount(
-                useRotationX,
-                useRotationY,
-                useRotationZ);
+            _rotationComponents +=
+                (useRotationPair ? 2 : 0) +
+                (useRotationZ ? 1 : 0);
         }
 
         if (isActor)
@@ -175,14 +148,63 @@ public sealed class PositionRotationModule : PatcherModule,
         }
     }
 
+    private static bool HasSafeDisableZ<TRecord, TGetter>(
+        RecordWorkItem<TRecord, TGetter> item)
+        where TRecord : class, IMajorRecord, TGetter, IPlaced
+        where TGetter : class, IMajorRecordGetter, IPlacedGetter
+    {
+        foreach (var context in item.Contexts)
+        {
+            if (context.Record.Placement is { } placement &&
+                SameValue(placement.Position.Z, SafeDisableZ))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static PairResolution ResolvePair<TRecord, TGetter>(
+        RecordWorkItem<TRecord, TGetter> item,
+        PlacementPair pair)
+        where TRecord : class, IMajorRecord, TGetter, IPlaced
+        where TGetter : class, IMajorRecordGetter, IPlacedGetter
+    {
+        bool isRotation = pair == PlacementPair.Rotation;
+        IEqualityComparer<AxisPair?> comparer = isRotation
+            ? RotationPairComparer.Instance
+            : EqualityComparer<AxisPair?>.Default;
+
+        AxisPair winnerPair = GetPair(item.Winner.Placement!, pair);
+        AxisPair originalPair = GetPair(item.Original.Placement!, pair);
+
+        // A non-default winning pair is authoritative. Recover a branch pair
+        // only when both winning components still match the original pair.
+        if (!comparer.Equals(winnerPair, originalPair))
+            return default;
+
+        bool resolved = BranchValueResolver.TryResolve(
+            item,
+            record => record.Placement is { } placement
+                ? GetPair(placement, pair)
+                : (AxisPair?)null,
+            comparer,
+            out AxisPair? value,
+            out _);
+
+        return resolved && value.HasValue
+            ? new PairResolution(true, value.Value)
+            : default;
+    }
+
     private static AxisResolution ResolveAxis<TRecord, TGetter>(
         RecordWorkItem<TRecord, TGetter> item,
         PlacementAxis axis)
         where TRecord : class, IMajorRecord, TGetter, IPlaced
         where TGetter : class, IMajorRecordGetter, IPlacedGetter
     {
-        bool isRotation = axis is PlacementAxis.RotationX or
-            PlacementAxis.RotationY or PlacementAxis.RotationZ;
+        bool isRotation = axis == PlacementAxis.RotationZ;
         bool resolved = BranchValueResolver.TryResolve(
             item,
             record => record.Placement is { } placement
@@ -192,22 +214,29 @@ public sealed class PositionRotationModule : PatcherModule,
                 ? RotationComparer.Instance
                 : EqualityComparer<float?>.Default,
             out float? value,
-            out int sourceIndex);
+            out _);
 
         return resolved && value.HasValue
-            ? new AxisResolution(true, value.Value, sourceIndex)
+            ? new AxisResolution(true, value.Value)
             : default;
+    }
+
+    private static AxisPair GetPair(
+        IPlacementGetter placement,
+        PlacementPair pair)
+    {
+        P3Float value = pair == PlacementPair.Position
+            ? placement.Position
+            : placement.Rotation;
+
+        return new AxisPair(value.X, value.Y);
     }
 
     private static float GetAxis(IPlacementGetter placement, PlacementAxis axis)
     {
         return axis switch
         {
-            PlacementAxis.PositionX => placement.Position.X,
-            PlacementAxis.PositionY => placement.Position.Y,
             PlacementAxis.PositionZ => placement.Position.Z,
-            PlacementAxis.RotationX => placement.Rotation.X,
-            PlacementAxis.RotationY => placement.Rotation.Y,
             PlacementAxis.RotationZ => placement.Rotation.Z,
             _ => throw new ArgumentOutOfRangeException(nameof(axis)),
         };
@@ -216,23 +245,43 @@ public sealed class PositionRotationModule : PatcherModule,
     private static bool SameValue(float first, float second) =>
         first.Equals(second);
 
-    private static int BoolCount(bool first, bool second, bool third) =>
-        (first ? 1 : 0) + (second ? 1 : 0) + (third ? 1 : 0);
-
     private enum PlacementAxis
     {
-        PositionX,
-        PositionY,
         PositionZ,
-        RotationX,
-        RotationY,
         RotationZ,
     }
 
+    private enum PlacementPair
+    {
+        Position,
+        Rotation,
+    }
+
+    private readonly record struct AxisPair(float X, float Y);
+
+    private readonly record struct PairResolution(
+        bool Use,
+        AxisPair Value);
+
     private readonly record struct AxisResolution(
         bool Use,
-        float Value,
-        int SourceIndex);
+        float Value);
+
+    private sealed class RotationPairComparer : IEqualityComparer<AxisPair?>
+    {
+        public static readonly RotationPairComparer Instance = new();
+
+        public bool Equals(AxisPair? left, AxisPair? right)
+        {
+            if (!left.HasValue || !right.HasValue)
+                return left.HasValue == right.HasValue;
+
+            return RotationComparer.Instance.Equals(left.Value.X, right.Value.X) &&
+                RotationComparer.Instance.Equals(left.Value.Y, right.Value.Y);
+        }
+
+        public int GetHashCode(AxisPair? value) => 0;
+    }
 
     private sealed class RotationComparer : IEqualityComparer<float?>
     {

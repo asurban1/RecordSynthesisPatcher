@@ -28,3 +28,12 @@ public interface IRecordModule<TRecord, TGetter> : IPatcherModule
 {
     void Process(RecordWorkItem<TRecord, TGetter> item);
 }
+
+// Finalizers run after every normal action for a record. They can enforce
+// output invariants without creating an override when no action changed it.
+public interface IRecordFinalizer<TRecord, TGetter> : IPatcherModule
+    where TRecord : class, IMajorRecord, TGetter
+    where TGetter : class, IMajorRecordGetter
+{
+    void FinalizeRecord(RecordWorkItem<TRecord, TGetter> item);
+}

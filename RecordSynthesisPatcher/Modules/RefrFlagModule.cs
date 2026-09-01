@@ -8,7 +8,8 @@ using Mutagen.Bethesda.Skyrim;
 namespace RecordSynthesisPatcher.Modules;
 
 public sealed class RefrFlagModule : PatcherModule,
-    IRecordModule<IPlacedObject, IPlacedObjectGetter>
+    IRecordModule<IPlacedObject, IPlacedObjectGetter>,
+    IRecordFinalizer<IPlacedObject, IPlacedObjectGetter>
 {
     private const int HiddenFromLocalMap = 0x00000200;
     private const int Persistent = 0x00000400;
@@ -45,30 +46,52 @@ public sealed class RefrFlagModule : PatcherModule,
 
     public void Process(RecordWorkItem<IPlacedObject, IPlacedObjectGetter> item)
     {
+        // REFR flags are enforced after every action has had an opportunity to
+        // create the output override.
+    }
+
+    public void FinalizeRecord(
+        RecordWorkItem<IPlacedObject, IPlacedObjectGetter> item)
+    {
         if (!item.Services.Settings.REFR.FlagsMerge ||
             item.Contexts.Count < 2)
             return;
 
-        if (item.Contexts.Count == 2 &&
-            !_ignoredSourcePlugins.Contains(item.WinningPlugin))
-            return;
-
-        PluginOverrideGraph graph = item.GetGraph(_ignoredSourcePlugins);
-        int desired = (int)BranchFlagMerger.Resolve(
-            item,
-            graph,
-            _ignoredSourcePlugins,
-            record => (uint)record.MajorRecordFlagsRaw,
-            (uint)MergeMask);
-
         int winner = item.Winner.MajorRecordFlagsRaw;
-        int added = (desired & MergeMask) & ~(winner & MergeMask);
-        int removed = (winner & MergeMask) & ~(desired & MergeMask);
-        if (added == 0 && removed == 0)
+        int desiredManaged = winner & MergeMask;
+
+        bool hasIndependentBranches =
+            item.Contexts.Count > 2 ||
+            _ignoredSourcePlugins.Contains(item.WinningPlugin);
+
+        if (hasIndependentBranches)
+        {
+            PluginOverrideGraph graph = item.GetGraph(_ignoredSourcePlugins);
+            desiredManaged = (int)BranchFlagMerger.Resolve(
+                item,
+                graph,
+                _ignoredSourcePlugins,
+                record => (uint)record.MajorRecordFlagsRaw,
+                (uint)MergeMask) & MergeMask;
+        }
+
+        bool differsFromWinner =
+            desiredManaged != (winner & MergeMask);
+        IPlacedObject? patchRecord = item.ExistingOverride;
+
+        if (!differsFromWinner && patchRecord is null)
             return;
 
-        item.GetOrAddOverride().MajorRecordFlagsRaw =
-            (winner & ~MergeMask) | (desired & MergeMask);
+        patchRecord ??= item.GetOrAddOverride();
+
+        int before = patchRecord.MajorRecordFlagsRaw;
+        int after = (before & ~MergeMask) | desiredManaged;
+        if (before == after)
+            return;
+
+        int added = (after & MergeMask) & ~(before & MergeMask);
+        int removed = (before & MergeMask) & ~(after & MergeMask);
+        patchRecord.MajorRecordFlagsRaw = after;
 
         _updated++;
         _flagsAdded += BitOperations.PopCount((uint)added);

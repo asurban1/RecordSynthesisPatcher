@@ -151,7 +151,17 @@ public sealed class PatcherEngine
                 (IRecordModule<TRecord, TGetter>)participant.Processor)
             .ToArray();
 
-        bool includeOriginalRecords = modules.Any(module => module.IncludeOriginalRecords);
+        var finalizers = participants
+            .Select(participant => participant.Module)
+            .Distinct()
+            .OfType<IRecordFinalizer<TRecord, TGetter>>()
+            .OrderBy(finalizer => finalizer.Order)
+            .ThenBy(finalizer => finalizer.Name, StringComparer.Ordinal)
+            .ToArray();
+
+        bool includeOriginalRecords =
+            modules.Any(module => module.IncludeOriginalRecords) ||
+            finalizers.Any(finalizer => finalizer.IncludeOriginalRecords);
         var seen = new HashSet<FormKey>();
         int winners = 0;
         int originalOnly = 0;
@@ -195,6 +205,12 @@ public sealed class PatcherEngine
                 {
                     if (!isOriginalOnly || module.IncludeOriginalRecords)
                         module.Process(item);
+                }
+
+                foreach (var finalizer in finalizers)
+                {
+                    if (!isOriginalOnly || finalizer.IncludeOriginalRecords)
+                        finalizer.FinalizeRecord(item);
                 }
 
                 if (_services.ProgressInterval > 0 &&

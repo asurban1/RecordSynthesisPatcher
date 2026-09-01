@@ -37,6 +37,8 @@ public sealed class RecordWorkItem<TRecord, TGetter>
 
     public TGetter Original => Contexts[Contexts.Count - 1].Record;
 
+    public TRecord? ExistingOverride => _patchRecord;
+
     public TGetter GetRecord(ModKey modKey)
     {
         _recordsByPlugin ??= Contexts.ToDictionary(
