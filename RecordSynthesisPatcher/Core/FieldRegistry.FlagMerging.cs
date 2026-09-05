@@ -31,16 +31,6 @@ public static partial class FieldRegistry
             EnumMask<NpcConfiguration.Flag>(),
             mergers);
 
-        AddFlagMerge<IWorldspace, IWorldspaceGetter>(
-            bindings,
-            settings.WRLD.FlagsMerge,
-            "WRLD.RecordFlags",
-            record => (ulong)record.MajorFlags,
-            (record, value) =>
-                record.MajorFlags = (Worldspace.MajorFlag)value,
-            (ulong)Worldspace.MajorFlag.CanNotWait,
-            mergers);
-
         RegisterBipedBodyTemplateFlags(bindings, settings, mergers);
     }
 

@@ -1,17 +1,20 @@
 using System;
+using System.Collections.Generic;
 using System.Numerics;
+using Mutagen.Bethesda.Plugins;
 using RecordSynthesisPatcher.Core;
 using Mutagen.Bethesda.Skyrim;
 
 namespace RecordSynthesisPatcher.Modules;
 
-// The original WRLD prototype intentionally has narrow semantics: only
-// SmallWorld and CannotFastTravel removals are sticky. It never adds flags and
-// never touches WRLD major-record flags or unrelated ordinary bits.
+// WRLD flag handling intentionally has narrow semantics: only surviving
+// SmallWorld and CannotFastTravel removals are preserved. It never adds flags
+// and never touches WRLD major-record flags or unrelated ordinary bits.
 public sealed class WorldspaceFlagModule : PatcherModule,
-    IRecordModule<IWorldspace, IWorldspaceGetter>
+    IRecordModule<IWorldspace, IWorldspaceGetter>,
+    IRecordFinalizer<IWorldspace, IWorldspaceGetter>
 {
-    private const Worldspace.Flag StickyRemovalMask =
+    private const Worldspace.Flag RemovalMask =
         Worldspace.Flag.SmallWorld |
         Worldspace.Flag.CannotFastTravel;
 
@@ -24,26 +27,26 @@ public sealed class WorldspaceFlagModule : PatcherModule,
 
     public void Process(RecordWorkItem<IWorldspace, IWorldspaceGetter> item)
     {
+        // Ordinary actions run first. Surviving WRLD removals are enforced
+        // after every configured field has finished writing the record.
+    }
+
+    public void FinalizeRecord(
+        RecordWorkItem<IWorldspace, IWorldspaceGetter> item)
+    {
         if (!item.Services.Settings.WRLD.FlagsMerge ||
-            (item.Winner.Flags & StickyRemovalMask) == 0 ||
+            (item.Winner.Flags & RemovalMask) == 0 ||
             item.Contexts.Count < 3)
             return;
 
-        PluginOverrideGraph graph = item.GetGraph();
-        Worldspace.Flag removedAnywhere = 0;
-
-        foreach (PluginOverrideNode node in graph.Nodes.Values)
-        {
-            Worldspace.Flag childFlags = item.GetRecord(node.ModKey).Flags;
-            foreach (PluginOverrideNode parent in node.Parents)
-            {
-                Worldspace.Flag parentFlags = item.GetRecord(parent.ModKey).Flags;
-                removedAnywhere |=
-                    parentFlags & ~childFlags & StickyRemovalMask;
-            }
-        }
-
-        Worldspace.Flag flagsToRemove = item.Winner.Flags & removedAnywhere;
+        ulong desired = BranchFlagMerger.Resolve(
+            item,
+            item.GetGraph(),
+            NoIgnoredPlugins,
+            record => (ulong)record.Flags,
+            (ulong)RemovalMask);
+        Worldspace.Flag flagsToRemove = item.Winner.Flags &
+            ~(Worldspace.Flag)desired & RemovalMask;
         if (flagsToRemove == 0)
             return;
 
@@ -68,4 +71,7 @@ public sealed class WorldspaceFlagModule : PatcherModule,
             $"WRLD flags: {_updated:N0} records updated, " +
             $"{_flagsRemoved:N0} flags removed.");
     }
+
+    private static readonly IReadOnlySet<ModKey> NoIgnoredPlugins =
+        new HashSet<ModKey>();
 }

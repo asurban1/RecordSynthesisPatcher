@@ -207,14 +207,15 @@ public static partial class FieldRegistry
         return string.Equals(left.String, right.String, StringComparison.Ordinal);
     }
 
+    // XESP's semantic value is its presence, reference, and flags. Mutagen's
+    // versioning and unused bytes are representation details and must not
+    // manufacture a separate conflict decision.
     private static bool SameEnableParent(
         IEnableParentGetter? left, IEnableParentGetter? right) =>
         ReferenceEquals(left, right) ||
         left is not null && right is not null &&
         left.Reference.FormKey == right.Reference.FormKey &&
-        left.Flags == right.Flags &&
-        left.Versioning == right.Versioning &&
-        left.Unknown.Equals(right.Unknown);
+        left.Flags == right.Flags;
 
     private static bool SameLock(
         ILockDataGetter? left, ILockDataGetter? right) =>
