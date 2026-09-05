@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Numerics;
-using Mutagen.Bethesda.Plugins;
 using RecordSynthesisPatcher.Core;
 using Mutagen.Bethesda.Skyrim;
 
@@ -42,7 +40,6 @@ public sealed class WorldspaceFlagModule : PatcherModule,
         ulong desired = BranchFlagMerger.Resolve(
             item,
             item.GetGraph(),
-            NoIgnoredPlugins,
             record => (ulong)record.Flags,
             (ulong)RemovalMask);
         Worldspace.Flag flagsToRemove = item.Winner.Flags &
@@ -71,7 +68,4 @@ public sealed class WorldspaceFlagModule : PatcherModule,
             $"WRLD flags: {_updated:N0} records updated, " +
             $"{_flagsRemoved:N0} flags removed.");
     }
-
-    private static readonly IReadOnlySet<ModKey> NoIgnoredPlugins =
-        new HashSet<ModKey>();
 }

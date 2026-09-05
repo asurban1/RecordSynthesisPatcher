@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Mutagen.Bethesda.Plugins;
 using Mutagen.Bethesda.Plugins.Records;
 using RecordSynthesisPatcher.Core;
 
@@ -12,9 +11,6 @@ namespace RecordSynthesisPatcher.Modules;
 // corresponding decision made by its master.
 public sealed class FlagMergerModule : PatcherModule, IFlagMergingActionModule
 {
-    private static readonly IReadOnlySet<ModKey> NoIgnoredPlugins =
-        new HashSet<ModKey>();
-
     private readonly Dictionary<string, FieldTotals> _totalsByField =
         new(StringComparer.Ordinal);
 
@@ -34,7 +30,6 @@ public sealed class FlagMergerModule : PatcherModule, IFlagMergingActionModule
         ulong desired = BranchFlagMerger.Resolve(
             item,
             item.GetGraph(),
-            NoIgnoredPlugins,
             field.Read,
             field.Mask);
 

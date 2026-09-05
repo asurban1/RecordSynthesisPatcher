@@ -1,120 +1,206 @@
+using System;
 using System.Collections.Generic;
 using Mutagen.Bethesda.Plugins;
 using Mutagen.Bethesda.Plugins.Records;
 
 namespace RecordSynthesisPatcher.Core;
 
-// Resolves scalar or whole-object values on the real plugin master graph.
-// Blank/null is an ordinary value. A decision is created only when a node's
-// value differs from every nearest record-owning parent. Matching a parent
-// carries that parent's active decision down that path; a decision made on one
-// fork is therefore superseded only on that fork, never globally.
+internal enum BranchValueResolutionStatus
+{
+    NoSurvivingDecision,
+    WinnerAlreadyMatches,
+    Selected,
+}
+
+internal readonly record struct BranchValueResolution<TValue>(
+    BranchValueResolutionStatus Status,
+    TValue Value,
+    int SourceIndex,
+    int LeafIndex);
+
+// Resolves values on the real plugin master graph. Each node carries every
+// independent decision inherited from its nearest record-owning parents. A
+// node creates a replacement decision only when its value differs from all of
+// those parents; matching one parent must not discard decisions arriving from
+// the others. Descendant changes still replace all decisions on their path.
 internal static class BranchValueResolver
 {
     public static bool TryResolve<TRecord, TGetter, TValue>(
         RecordWorkItem<TRecord, TGetter> item,
-        System.Func<TGetter, TValue> read,
+        Func<TGetter, TValue> read,
         IEqualityComparer<TValue> comparer,
         out TValue value,
         out int sourceIndex)
         where TRecord : class, IMajorRecord, TGetter
         where TGetter : class, IMajorRecordGetter
     {
-        value = read(item.Winner);
-        sourceIndex = 0;
+        BranchValueResolution<TValue> resolution = Resolve(
+            item.GetResolutionTopology(),
+            plugin => read(item.GetRecord(plugin)),
+            comparer);
 
-        if (item.Contexts.Count < 3)
-            return false;
+        value = resolution.Value;
+        sourceIndex = resolution.SourceIndex;
+        return resolution.Status == BranchValueResolutionStatus.Selected;
+    }
 
-        PluginOverrideGraph graph = item.GetGraph();
-        var contextIndex = new Dictionary<ModKey, int>();
-        for (int index = 0; index < item.Contexts.Count; index++)
-            contextIndex[item.Contexts[index].ModKey] = index;
+    internal static BranchValueResolution<TValue> Resolve<
+        TRecord, TGetter, TValue>(
+        RecordWorkItem<TRecord, TGetter> item,
+        Func<ModKey, TValue> read,
+        IEqualityComparer<TValue> comparer)
+        where TRecord : class, IMajorRecord, TGetter
+        where TGetter : class, IMajorRecordGetter =>
+        Resolve(item.GetResolutionTopology(), read, comparer);
 
-        var activeByPlugin =
-            new Dictionary<ModKey, ActiveDecision<TValue>?>();
-
-        // Contexts are winner-first, so reverse iteration is origin-first and
-        // guarantees every nearest parent has already been evaluated.
-        for (int index = item.Contexts.Count - 1; index >= 0; index--)
+    internal static BranchValueResolution<TValue> Resolve<TValue>(
+        BranchResolutionTopology topology,
+        Func<ModKey, TValue> read,
+        IEqualityComparer<TValue> comparer)
+    {
+        TValue winnerValue = read(topology.Plugins[topology.WinnerIndex]);
+        if (topology.Plugins.Length < 3)
         {
-            var context = item.Contexts[index];
-            PluginOverrideNode node = graph.Nodes[context.ModKey];
-            if (node.Parents.Count == 0)
-            {
-                activeByPlugin[context.ModKey] = null;
+            return new BranchValueResolution<TValue>(
+                BranchValueResolutionStatus.NoSurvivingDecision,
+                winnerValue,
+                topology.WinnerIndex,
+                -1);
+        }
+
+        var activeByIndex =
+            new List<ActiveDecision<TValue>>?[topology.Plugins.Length];
+
+        // Plugins are winner-first, so reverse iteration is origin-first and
+        // guarantees that every nearest parent has already been evaluated.
+        for (int index = topology.Plugins.Length - 1; index >= 0; index--)
+        {
+            int[] parents = topology.Parents[index];
+            if (parents.Length == 0)
                 continue;
-            }
 
-            TValue candidate = read(context.Record);
-            ActiveDecision<TValue>? inherited = null;
-            bool matchesParent = false;
-
-            foreach (PluginOverrideNode parent in node.Parents)
+            TValue candidate = read(topology.Plugins[index]);
+            bool matchesAnyParent = false;
+            foreach (int parentIndex in parents)
             {
-                if (!comparer.Equals(
-                        candidate, read(item.GetRecord(parent.ModKey))))
-                    continue;
-
-                matchesParent = true;
-                ActiveDecision<TValue>? parentDecision =
-                    activeByPlugin[parent.ModKey];
-                if (parentDecision is not null &&
-                    (inherited is null ||
-                     parentDecision.SourceIndex < inherited.SourceIndex))
+                if (comparer.Equals(
+                        candidate, read(topology.Plugins[parentIndex])))
                 {
-                    inherited = parentDecision;
+                    matchesAnyParent = true;
+                    break;
                 }
             }
 
-            activeByPlugin[context.ModKey] = matchesParent
-                ? inherited
-                : new ActiveDecision<TValue>(candidate, index);
+            if (!matchesAnyParent)
+            {
+                // This node explicitly resolves the value against every
+                // incoming branch, replacing their decisions on this path.
+                activeByIndex[index] =
+                    new List<ActiveDecision<TValue>>(1)
+                    {
+                        new(candidate, index),
+                    };
+                continue;
+            }
+
+            // Matching one parent is not an explicit rejection of the other
+            // independent parents. Preserve every distinct source decision.
+            List<ActiveDecision<TValue>>? inherited = null;
+            foreach (int parentIndex in parents)
+            {
+                if (activeByIndex[parentIndex] is not { } parentDecisions)
+                    continue;
+
+                inherited ??= new List<ActiveDecision<TValue>>();
+                foreach (ActiveDecision<TValue> decision in parentDecisions)
+                {
+                    if (!ContainsSource(inherited, decision.SourceIndex))
+                        inherited.Add(decision);
+                }
+            }
+
+            activeByIndex[index] = inherited;
         }
 
-        // A branch's current leaf priority, rather than the load position of
-        // the original decision, decides between independent surviving states.
-        // Leaves that still carry only the root state have no active decision
-        // and cannot erase a meaningful change from another branch.
+        TValue rootValue = read(topology.Plugins[topology.RootIndex]);
         ActiveDecision<TValue>? resolved = null;
         int resolvedLeafIndex = int.MaxValue;
-        bool resolvedIsRoot = true;
-        TValue rootValue = read(item.GetRecord(graph.Root.ModKey));
-        foreach (PluginOverrideNode leaf in graph.Nodes.Values)
+
+        for (int leafIndex = 0; leafIndex < topology.Plugins.Length; leafIndex++)
         {
-            if (leaf.Children.Count != 0 ||
-                activeByPlugin[leaf.ModKey] is not { } leafDecision)
+            if (!topology.Leaves[leafIndex] ||
+                activeByIndex[leafIndex] is not { } leafDecisions)
+            {
+                continue;
+            }
+
+            ActiveDecision<TValue>? leafDecision = null;
+            foreach (ActiveDecision<TValue> decision in leafDecisions)
+            {
+                // A root-valued decision closes its own descendant path. It
+                // cannot erase a meaningful value surviving independently.
+                if (comparer.Equals(decision.Value, rootValue))
+                    continue;
+
+                if (leafDecision is null ||
+                    decision.SourceIndex < leafDecision.Value.SourceIndex)
+                {
+                    leafDecision = decision;
+                }
+            }
+
+            if (leafDecision is null)
                 continue;
 
-            int leafIndex = contextIndex[leaf.ModKey];
-            bool leafIsRoot = comparer.Equals(leafDecision.Value, rootValue);
-
-            // A default/root-valued decision can remove a change only on its
-            // own descendant path. It cannot erase a non-default value that
-            // still survives on an independent leaf branch.
             if (resolved is null ||
-                (resolvedIsRoot && !leafIsRoot) ||
-                (resolvedIsRoot == leafIsRoot &&
-                 leafIndex < resolvedLeafIndex))
+                leafIndex < resolvedLeafIndex ||
+                leafIndex == resolvedLeafIndex &&
+                leafDecision.Value.SourceIndex < resolved.Value.SourceIndex)
             {
                 resolved = leafDecision;
                 resolvedLeafIndex = leafIndex;
-                resolvedIsRoot = leafIsRoot;
             }
         }
 
-        if (resolved is null ||
-            comparer.Equals(resolved.Value, read(item.Winner)))
+        if (resolved is null)
         {
-            return false;
+            return new BranchValueResolution<TValue>(
+                BranchValueResolutionStatus.NoSurvivingDecision,
+                winnerValue,
+                topology.WinnerIndex,
+                -1);
         }
 
-        value = resolved.Value;
-        sourceIndex = resolved.SourceIndex;
-        return true;
+        if (comparer.Equals(resolved.Value.Value, winnerValue))
+        {
+            return new BranchValueResolution<TValue>(
+                BranchValueResolutionStatus.WinnerAlreadyMatches,
+                resolved.Value.Value,
+                resolved.Value.SourceIndex,
+                resolvedLeafIndex);
+        }
+
+        return new BranchValueResolution<TValue>(
+            BranchValueResolutionStatus.Selected,
+            resolved.Value.Value,
+            resolved.Value.SourceIndex,
+            resolvedLeafIndex);
     }
 
-    private sealed record ActiveDecision<TValue>(
+    private static bool ContainsSource<TValue>(
+        List<ActiveDecision<TValue>> decisions,
+        int sourceIndex)
+    {
+        foreach (ActiveDecision<TValue> decision in decisions)
+        {
+            if (decision.SourceIndex == sourceIndex)
+                return true;
+        }
+
+        return false;
+    }
+
+    private readonly record struct ActiveDecision<TValue>(
         TValue Value,
         int SourceIndex);
 }

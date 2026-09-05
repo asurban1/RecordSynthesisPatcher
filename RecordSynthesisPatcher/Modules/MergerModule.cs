@@ -87,7 +87,6 @@ public sealed class MergerModule : PatcherModule, IMergingActionModule
         if (item.Contexts.Count < 3)
             return null;
 
-        PluginOverrideGraph graph = item.GetGraph();
         var entriesByPlugin = new Dictionary<ModKey, EntryMap<TEntry>>();
         var allKeys = new HashSet<object>();
 
@@ -114,107 +113,34 @@ public sealed class MergerModule : PatcherModule, IMergingActionModule
             entriesByPlugin.Add(context.ModKey, new EntryMap<TEntry>(map));
         }
 
-        EntryMap<TEntry> winnerMap = entriesByPlugin[item.WinningPlugin];
         var removals = new HashSet<object>();
         var additions = new List<Addition<TEntry>>();
-        var contextIndex = new Dictionary<ModKey, int>();
-        for (int index = 0; index < item.Contexts.Count; index++)
-            contextIndex[item.Contexts[index].ModKey] = index;
 
         foreach (object key in allKeys)
         {
-            bool winnerContains = winnerMap.Entries.ContainsKey(key);
-            bool rootContains = entriesByPlugin[graph.Root.ModKey]
-                .Entries.ContainsKey(key);
-            var activeByPlugin =
-                new Dictionary<ModKey, PresenceDecision<TEntry>?>();
+            BranchValueResolution<bool> resolution =
+                BranchValueResolver.Resolve(
+                    item,
+                    plugin => entriesByPlugin[plugin]
+                        .Entries.ContainsKey(key),
+                    EqualityComparer<bool>.Default);
 
-            // Carry the active presence decision down every real master path.
-            // A descendant supersedes a decision only on the path containing
-            // that descendant; sibling branches retain the inherited state.
-            for (int sourceIndex = item.Contexts.Count - 1;
-                 sourceIndex >= 0;
-                 sourceIndex--)
-            {
-                ModKey sourcePlugin = item.Contexts[sourceIndex].ModKey;
-                PluginOverrideNode sourceNode = graph.Nodes[sourcePlugin];
-                if (sourceNode.Parents.Count == 0)
-                {
-                    activeByPlugin[sourcePlugin] = null;
-                    continue;
-                }
-
-                EntryMap<TEntry> sourceMap = entriesByPlugin[sourcePlugin];
-                bool sourceContains = sourceMap.Entries.ContainsKey(key);
-                bool matchesParent = false;
-                PresenceDecision<TEntry>? inherited = null;
-
-                foreach (PluginOverrideNode parent in sourceNode.Parents)
-                {
-                    bool parentContains =
-                        entriesByPlugin[parent.ModKey].Entries.ContainsKey(key);
-                    if (parentContains != sourceContains)
-                        continue;
-
-                    matchesParent = true;
-                    PresenceDecision<TEntry>? parentDecision =
-                        activeByPlugin[parent.ModKey];
-                    if (parentDecision is not null &&
-                        (inherited is null ||
-                         parentDecision.SourceIndex < inherited.SourceIndex))
-                    {
-                        inherited = parentDecision;
-                    }
-                }
-
-                sourceMap.Entries.TryGetValue(
-                    key, out OrderedEntry<TEntry>? sourceEntry);
-                activeByPlugin[sourcePlugin] = matchesParent
-                    ? inherited
-                    : new PresenceDecision<TEntry>(
-                        sourcePlugin,
-                        sourceIndex,
-                        sourceContains,
-                        sourceEntry);
-            }
-
-            // Rank states by the priority of the leaf carrying them. A state
-            // different from the root wins over a root-valued reversion on an
-            // independent branch, but a descendant reversion still suppresses
-            // the earlier decision on its own path.
-            PresenceDecision<TEntry>? resolved = null;
-            int resolvedLeafIndex = int.MaxValue;
-            bool resolvedIsRoot = true;
-            foreach (PluginOverrideNode leaf in graph.Nodes.Values)
-            {
-                if (leaf.Children.Count != 0 ||
-                    activeByPlugin[leaf.ModKey] is not { } leafDecision)
-                    continue;
-
-                int leafIndex = contextIndex[leaf.ModKey];
-                bool leafIsRoot = leafDecision.Contains == rootContains;
-                if (resolved is null ||
-                    (resolvedIsRoot && !leafIsRoot) ||
-                    (resolvedIsRoot == leafIsRoot &&
-                     leafIndex < resolvedLeafIndex))
-                {
-                    resolved = leafDecision;
-                    resolvedLeafIndex = leafIndex;
-                    resolvedIsRoot = leafIsRoot;
-                }
-            }
-
-            if (resolved is null || resolved.Contains == winnerContains)
-            {
+            if (resolution.Status != BranchValueResolutionStatus.Selected)
                 continue;
-            }
 
-            if (resolved.Contains)
+            if (resolution.Value)
             {
-                OrderedEntry<TEntry> sourceEntry = resolved.Entry!;
+                ModKey sourcePlugin =
+                    item.Contexts[resolution.SourceIndex].ModKey;
+                if (!entriesByPlugin[sourcePlugin].Entries.TryGetValue(
+                        key, out OrderedEntry<TEntry>? sourceEntry))
+                {
+                    continue;
+                }
+
                 additions.Add(new Addition<TEntry>(
                     sourceEntry.Entry,
-                    resolvedLeafIndex,
+                    resolution.SourceIndex,
                     sourceEntry.Order));
             }
             else
@@ -258,12 +184,6 @@ public sealed class MergerModule : PatcherModule, IMergingActionModule
         Dictionary<object, OrderedEntry<TEntry>> Entries);
 
     private sealed record OrderedEntry<TEntry>(TEntry Entry, int Order);
-
-    private sealed record PresenceDecision<TEntry>(
-        ModKey Plugin,
-        int SourceIndex,
-        bool Contains,
-        OrderedEntry<TEntry>? Entry);
 
     private sealed record Addition<TEntry>(
         TEntry Entry,

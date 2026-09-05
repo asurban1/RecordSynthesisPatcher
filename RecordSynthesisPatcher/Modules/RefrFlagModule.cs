@@ -72,7 +72,6 @@ public sealed class RefrFlagModule : PatcherModule,
             desiredManaged = (int)BranchFlagMerger.Resolve(
                 item,
                 graph,
-                _ignoredSourcePlugins,
                 record => (uint)record.MajorRecordFlagsRaw,
                 (uint)MergeMask) & MergeMask;
         }

@@ -14,6 +14,7 @@ public sealed class RecordWorkItem<TRecord, TGetter>
     private List<IModContext<ISkyrimMod, ISkyrimModGetter, TRecord, TGetter>>? _contexts;
     private Dictionary<ModKey, TGetter>? _recordsByPlugin;
     private PluginOverrideGraph? _defaultGraph;
+    private BranchResolutionTopology? _defaultResolutionTopology;
     private TRecord? _patchRecord;
 
     internal RecordWorkItem(
@@ -69,5 +70,20 @@ public sealed class RecordWorkItem<TRecord, TGetter>
             .ToArray();
 
         return Services.Graphs.GetOrCreate(filteredKeys);
+    }
+
+    internal BranchResolutionTopology GetResolutionTopology()
+    {
+        if (_defaultResolutionTopology is not null)
+            return _defaultResolutionTopology;
+
+        var plugins = new ModKey[Contexts.Count];
+        for (int index = 0; index < Contexts.Count; index++)
+            plugins[index] = Contexts[index].ModKey;
+
+        return _defaultResolutionTopology = BranchResolutionTopology.Create(
+            plugins,
+            WinningPlugin,
+            GetGraph());
     }
 }

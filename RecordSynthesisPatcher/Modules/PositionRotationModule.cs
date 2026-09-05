@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Mutagen.Bethesda.Plugins;
 using Mutagen.Bethesda.Plugins.Records;
 using Mutagen.Bethesda.Skyrim;
 using Noggog;
@@ -11,7 +10,7 @@ namespace RecordSynthesisPatcher.Modules;
 // Placement forwarding has four independent decision units. X and Y are one
 // atomic pair for Position and Rotation; each Z value resolves independently.
 // A unit is recoverable only while the winning value still equals the record
-// origin. The highest-priority non-origin leaf then supplies the whole unit.
+// origin. The highest-priority surviving branch decision supplies the unit.
 public sealed class PositionRotationModule : PatcherModule,
     IRecordModule<IPlacedObject, IPlacedObjectGetter>,
     IRecordModule<IPlacedNpc, IPlacedNpcGetter>
@@ -83,39 +82,35 @@ public sealed class PositionRotationModule : PatcherModule,
             return;
         }
 
-        PluginOverrideGraph graph = item.GetGraph();
-        IReadOnlyDictionary<ModKey, int> contextIndex =
-            BuildContextIndex(item);
-
         bool skipPosition = forwardPosition && HasSafeDisableZ(item);
         if (skipPosition)
             _safeDisabledSkipped++;
 
         PairResolution positionPair = forwardPosition && !skipPosition
-            ? ResolvePair(item, graph, contextIndex, PlacementPair.Position)
+            ? ResolvePair(item, PlacementPair.Position)
             : default;
         AxisResolution positionZ = forwardPosition && !skipPosition
-            ? ResolveAxis(item, graph, contextIndex, PlacementAxis.PositionZ)
+            ? ResolveAxis(item, PlacementAxis.PositionZ)
             : default;
         PairResolution rotationPair = forwardRotation
-            ? ResolvePair(item, graph, contextIndex, PlacementPair.Rotation)
+            ? ResolvePair(item, PlacementPair.Rotation)
             : default;
         AxisResolution rotationZ = forwardRotation
-            ? ResolveAxis(item, graph, contextIndex, PlacementAxis.RotationZ)
+            ? ResolveAxis(item, PlacementAxis.RotationZ)
             : default;
 
         bool hasUpdate =
-            positionPair.Status == LeafValueResolutionStatus.Selected ||
-            positionZ.Status == LeafValueResolutionStatus.Selected ||
-            rotationPair.Status == LeafValueResolutionStatus.Selected ||
-            rotationZ.Status == LeafValueResolutionStatus.Selected;
+            positionPair.Status == PlacementResolutionStatus.Selected ||
+            positionZ.Status == PlacementResolutionStatus.Selected ||
+            rotationPair.Status == PlacementResolutionStatus.Selected ||
+            rotationZ.Status == PlacementResolutionStatus.Selected;
 
         if (item.Services.VerboseRecordLogging &&
             (hasUpdate || skipPosition ||
-             positionPair.Status == LeafValueResolutionStatus.WinnerIsNonDefault ||
-             positionZ.Status == LeafValueResolutionStatus.WinnerIsNonDefault ||
-             rotationPair.Status == LeafValueResolutionStatus.WinnerIsNonDefault ||
-             rotationZ.Status == LeafValueResolutionStatus.WinnerIsNonDefault))
+             positionPair.Status == PlacementResolutionStatus.WinnerIsNonDefault ||
+             positionZ.Status == PlacementResolutionStatus.WinnerIsNonDefault ||
+             rotationPair.Status == PlacementResolutionStatus.WinnerIsNonDefault ||
+             rotationZ.Status == PlacementResolutionStatus.WinnerIsNonDefault))
         {
             LogDecision(
                 item,
@@ -134,62 +129,50 @@ public sealed class PositionRotationModule : PatcherModule,
         if (patchPlacement is null)
             return;
 
-        if (positionPair.Status == LeafValueResolutionStatus.Selected ||
-            positionZ.Status == LeafValueResolutionStatus.Selected)
+        if (positionPair.Status == PlacementResolutionStatus.Selected ||
+            positionZ.Status == PlacementResolutionStatus.Selected)
         {
             P3Float existing = patchPlacement.Position;
             patchPlacement.Position = new P3Float(
-                positionPair.Status == LeafValueResolutionStatus.Selected
+                positionPair.Status == PlacementResolutionStatus.Selected
                     ? positionPair.Value.X
                     : existing.X,
-                positionPair.Status == LeafValueResolutionStatus.Selected
+                positionPair.Status == PlacementResolutionStatus.Selected
                     ? positionPair.Value.Y
                     : existing.Y,
-                positionZ.Status == LeafValueResolutionStatus.Selected
+                positionZ.Status == PlacementResolutionStatus.Selected
                     ? positionZ.Value
                     : existing.Z);
 
             _positionComponents +=
-                (positionPair.Status == LeafValueResolutionStatus.Selected ? 2 : 0) +
-                (positionZ.Status == LeafValueResolutionStatus.Selected ? 1 : 0);
+                (positionPair.Status == PlacementResolutionStatus.Selected ? 2 : 0) +
+                (positionZ.Status == PlacementResolutionStatus.Selected ? 1 : 0);
         }
 
-        if (rotationPair.Status == LeafValueResolutionStatus.Selected ||
-            rotationZ.Status == LeafValueResolutionStatus.Selected)
+        if (rotationPair.Status == PlacementResolutionStatus.Selected ||
+            rotationZ.Status == PlacementResolutionStatus.Selected)
         {
             P3Float existing = patchPlacement.Rotation;
             patchPlacement.Rotation = new P3Float(
-                rotationPair.Status == LeafValueResolutionStatus.Selected
+                rotationPair.Status == PlacementResolutionStatus.Selected
                     ? rotationPair.Value.X
                     : existing.X,
-                rotationPair.Status == LeafValueResolutionStatus.Selected
+                rotationPair.Status == PlacementResolutionStatus.Selected
                     ? rotationPair.Value.Y
                     : existing.Y,
-                rotationZ.Status == LeafValueResolutionStatus.Selected
+                rotationZ.Status == PlacementResolutionStatus.Selected
                     ? rotationZ.Value
                     : existing.Z);
 
             _rotationComponents +=
-                (rotationPair.Status == LeafValueResolutionStatus.Selected ? 2 : 0) +
-                (rotationZ.Status == LeafValueResolutionStatus.Selected ? 1 : 0);
+                (rotationPair.Status == PlacementResolutionStatus.Selected ? 2 : 0) +
+                (rotationZ.Status == PlacementResolutionStatus.Selected ? 1 : 0);
         }
 
         if (isActor)
             _achrUpdated++;
         else
             _refrUpdated++;
-    }
-
-    private static IReadOnlyDictionary<ModKey, int> BuildContextIndex<
-        TRecord, TGetter>(RecordWorkItem<TRecord, TGetter> item)
-        where TRecord : class, IMajorRecord, TGetter
-        where TGetter : class, IMajorRecordGetter
-    {
-        var result = new Dictionary<ModKey, int>(item.Contexts.Count);
-        for (int index = 0; index < item.Contexts.Count; index++)
-            result[item.Contexts[index].ModKey] = index;
-
-        return result;
     }
 
     private static bool HasSafeDisableZ<TRecord, TGetter>(
@@ -211,95 +194,87 @@ public sealed class PositionRotationModule : PatcherModule,
 
     private static PairResolution ResolvePair<TRecord, TGetter>(
         RecordWorkItem<TRecord, TGetter> item,
-        PluginOverrideGraph graph,
-        IReadOnlyDictionary<ModKey, int> contextIndex,
         PlacementPair pair)
         where TRecord : class, IMajorRecord, TGetter, IPlaced
         where TGetter : class, IMajorRecordGetter, IPlacedGetter
     {
-        LeafValueResolution<AxisPair?> resolution = ResolveLeafValue(
+        PlacementValueResolution<AxisPair?> resolution = ResolveBranchValue(
             item,
-            graph,
-            contextIndex,
             record => record.Placement is { } placement
                 ? GetPair(placement, pair)
                 : null,
             EqualityComparer<AxisPair?>.Default);
 
-        return resolution.Status == LeafValueResolutionStatus.Selected &&
+        return resolution.Status == PlacementResolutionStatus.Selected &&
             resolution.Value.HasValue
                 ? new PairResolution(
                     resolution.Status,
                     resolution.Value.Value,
-                    resolution.LeafIndex)
+                    resolution.SourceIndex)
                 : new PairResolution(
                     resolution.Status,
                     default,
-                    resolution.LeafIndex);
+                    resolution.SourceIndex);
     }
 
     private static AxisResolution ResolveAxis<TRecord, TGetter>(
         RecordWorkItem<TRecord, TGetter> item,
-        PluginOverrideGraph graph,
-        IReadOnlyDictionary<ModKey, int> contextIndex,
         PlacementAxis axis)
         where TRecord : class, IMajorRecord, TGetter, IPlaced
         where TGetter : class, IMajorRecordGetter, IPlacedGetter
     {
-        LeafValueResolution<float?> resolution = ResolveLeafValue(
+        PlacementValueResolution<float?> resolution = ResolveBranchValue(
             item,
-            graph,
-            contextIndex,
             record => record.Placement is { } placement
                 ? GetAxis(placement, axis)
                 : null,
             EqualityComparer<float?>.Default);
 
-        return resolution.Status == LeafValueResolutionStatus.Selected &&
+        return resolution.Status == PlacementResolutionStatus.Selected &&
             resolution.Value.HasValue
                 ? new AxisResolution(
                     resolution.Status,
                     resolution.Value.Value,
-                    resolution.LeafIndex)
+                    resolution.SourceIndex)
                 : new AxisResolution(
                     resolution.Status,
                     default,
-                    resolution.LeafIndex);
+                    resolution.SourceIndex);
     }
 
-    // Every graph node owns an override of this record, so a leaf's value is
-    // the final state of that entire dependency branch. Looking at leaf state
-    // directly makes descendant reversions unambiguous and avoids carrying a
-    // stale ancestor decision beyond the descendant that superseded it.
-    private static LeafValueResolution<TValue> ResolveLeafValue<
+    private static PlacementValueResolution<TValue> ResolveBranchValue<
         TRecord, TGetter, TValue>(
         RecordWorkItem<TRecord, TGetter> item,
-        PluginOverrideGraph graph,
-        IReadOnlyDictionary<ModKey, int> contextIndex,
         Func<TGetter, TValue> read,
         IEqualityComparer<TValue> comparer)
         where TRecord : class, IMajorRecord, TGetter
         where TGetter : class, IMajorRecordGetter
     {
+        PluginOverrideGraph graph = item.GetGraph();
         TValue rootValue = read(item.GetRecord(graph.Root.ModKey));
         TValue winnerValue = read(item.Winner);
-        var leaves = new List<LeafValueCandidate<TValue>>();
-
-        foreach (PluginOverrideNode leaf in graph.Nodes.Values)
+        if (!comparer.Equals(winnerValue, rootValue))
         {
-            if (leaf.Children.Count != 0)
-                continue;
-
-            leaves.Add(new LeafValueCandidate<TValue>(
-                contextIndex[leaf.ModKey],
-                read(item.GetRecord(leaf.ModKey))));
+            return new PlacementValueResolution<TValue>(
+                PlacementResolutionStatus.WinnerIsNonDefault,
+                winnerValue,
+                0);
         }
 
-        return BranchLeafValueResolver.Resolve(
-            winnerValue,
-            rootValue,
-            leaves,
+        BranchValueResolution<TValue> resolution = BranchValueResolver.Resolve(
+            item,
+            plugin => read(item.GetRecord(plugin)),
             comparer);
+
+        return resolution.Status == BranchValueResolutionStatus.Selected
+            ? new PlacementValueResolution<TValue>(
+                PlacementResolutionStatus.Selected,
+                resolution.Value,
+                resolution.SourceIndex)
+            : new PlacementValueResolution<TValue>(
+                PlacementResolutionStatus.NoSurvivingBranchValue,
+                winnerValue,
+                resolution.SourceIndex);
     }
 
     private static AxisPair GetPair(
@@ -346,29 +321,29 @@ public sealed class PositionRotationModule : PatcherModule,
         else
         {
             LogUnit(item, "Position X/Y", positionPair.Status,
-                positionPair.LeafIndex);
+                positionPair.SourceIndex);
             LogUnit(item, "Position Z", positionZ.Status,
-                positionZ.LeafIndex);
+                positionZ.SourceIndex);
         }
 
         LogUnit(item, "Rotation X/Y", rotationPair.Status,
-            rotationPair.LeafIndex);
+            rotationPair.SourceIndex);
         LogUnit(item, "Rotation Z", rotationZ.Status,
-            rotationZ.LeafIndex);
+            rotationZ.SourceIndex);
     }
 
     private static void LogUnit<TRecord, TGetter>(
         RecordWorkItem<TRecord, TGetter> item,
         string name,
-        LeafValueResolutionStatus status,
-        int leafIndex)
+        PlacementResolutionStatus status,
+        int sourceIndex)
         where TRecord : class, IMajorRecord, TGetter
         where TGetter : class, IMajorRecordGetter
     {
-        string source = leafIndex >= 0
-            ? item.Contexts[leafIndex].ModKey.ToString()
+        string source = sourceIndex >= 0
+            ? item.Contexts[sourceIndex].ModKey.ToString()
             : "none";
-        Console.WriteLine($"  {name}: {status}; leaf={source}.");
+        Console.WriteLine($"  {name}: {status}; source={source}.");
     }
 
     private enum PlacementAxis
@@ -385,13 +360,25 @@ public sealed class PositionRotationModule : PatcherModule,
 
     private readonly record struct AxisPair(float X, float Y);
 
+    private enum PlacementResolutionStatus
+    {
+        NoSurvivingBranchValue,
+        WinnerIsNonDefault,
+        Selected,
+    }
+
+    private readonly record struct PlacementValueResolution<TValue>(
+        PlacementResolutionStatus Status,
+        TValue Value,
+        int SourceIndex);
+
     private readonly record struct PairResolution(
-        LeafValueResolutionStatus Status,
+        PlacementResolutionStatus Status,
         AxisPair Value,
-        int LeafIndex);
+        int SourceIndex);
 
     private readonly record struct AxisResolution(
-        LeafValueResolutionStatus Status,
+        PlacementResolutionStatus Status,
         float Value,
-        int LeafIndex);
+        int SourceIndex);
 }

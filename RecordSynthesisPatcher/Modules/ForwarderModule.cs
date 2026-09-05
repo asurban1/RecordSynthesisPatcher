@@ -24,6 +24,15 @@ public sealed class ForwarderModule : PatcherModule, IForwardingActionModule
         if (item.Contexts.Count < 3)
             return;
 
+        PluginOverrideGraph graph = item.GetGraph();
+        TValue winnerValue = field.Read(item.Winner);
+        TValue rootValue = field.Read(item.GetRecord(graph.Root.ModKey));
+
+        // Forwarding recovers a value only when the winner still equals the
+        // record origin. A non-origin winner is an authoritative decision.
+        if (!field.Comparer.Equals(winnerValue, rootValue))
+            return;
+
         TValue sourceValue;
         int sourceIndex;
 
