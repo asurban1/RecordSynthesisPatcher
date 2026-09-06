@@ -25,6 +25,7 @@ public static partial class FieldRegistry
         RegisterIngr(bindings, settings.INGR, forwarders);
         RegisterIpct(bindings, settings.IPCT, forwarders);
         RegisterKeym(bindings, settings.KEYM, forwarders);
+        RegisterLand(bindings, settings.LAND, forwarders);
         RegisterLctn(bindings, settings.LCTN, forwarders);
         RegisterLvli(bindings, settings.LVLI, forwarders);
         RegisterLvln(bindings, settings.LVLN, forwarders);
@@ -221,6 +222,46 @@ public static partial class FieldRegistry
         AddForward(b, s.Value, "KEYM.Value", (IKeyGetter r) => r.Value, (IKey r, uint v) => r.Value = v, IsDefault, f);
         AddForward(b, s.Weight, "KEYM.Weight", (IKeyGetter r) => r.Weight, (IKey r, float v) => r.Weight = v, IsDefault, f);
     }
+
+    private static void RegisterLand(
+        ICollection<IFieldBinding> b, LandForwardingSettings s,
+        IReadOnlyList<IForwardingActionModule> f)
+    {
+        AddForward(
+            b,
+            s.VertexColors,
+            "LAND.VertexColors",
+            (ILandscapeGetter r) => r.VertexColors,
+            (ILandscape r, IReadOnlyArray2d<P3UInt8>? v) =>
+                r.VertexColors = CopyLandscapeVertexArray(v),
+            v => v is null,
+            f,
+            LandscapeVertexArrayComparer.Instance);
+        AddForward(
+            b,
+            s.VertexHeightMap,
+            "LAND.VertexHeightMap",
+            (ILandscapeGetter r) => r.VertexHeightMap,
+            (ILandscape r, ILandscapeVertexHeightMapGetter? v) =>
+                r.VertexHeightMap = v?.DeepCopy(),
+            v => v is null,
+            f,
+            LandscapeVertexHeightMapComparer.Instance);
+        AddForward(
+            b,
+            s.VertexNormals,
+            "LAND.VertexNormals",
+            (ILandscapeGetter r) => r.VertexNormals,
+            (ILandscape r, IReadOnlyArray2d<P3UInt8>? v) =>
+                r.VertexNormals = CopyLandscapeVertexArray(v),
+            v => v is null,
+            f,
+            LandscapeVertexArrayComparer.Instance);
+    }
+
+    private static IArray2d<P3UInt8>? CopyLandscapeVertexArray(
+        IReadOnlyArray2d<P3UInt8>? value) =>
+        value is null ? null : new Array2d<P3UInt8>(value);
 
     private static void RegisterLctn(
         ICollection<IFieldBinding> b, LctnForwardingSettings s,

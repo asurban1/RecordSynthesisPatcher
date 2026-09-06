@@ -1645,6 +1645,12 @@ public sealed partial class LandForwardingSettings
     [SynthesisOrder]
     [SynthesisSettingName("Flags — [ MERGE ]")]
     public bool FlagsMerge = false;
+    [SynthesisOrder]
+    public bool VertexColors = false;
+    [SynthesisOrder]
+    public bool VertexHeightMap = false;
+    [SynthesisOrder]
+    public bool VertexNormals = false;
 }
 
 public sealed partial class LcrtForwardingSettings
