@@ -152,10 +152,15 @@ internal static class BranchValueResolver
             if (leafDecision is null)
                 continue;
 
+            // Compare the plugins that actually made the surviving decisions.
+            // A later leaf that merely inherits an older value must not make
+            // that value outrank a newer decision surviving on another leaf.
+            // Leaf priority is only a deterministic tie-breaker when the same
+            // source decision reaches more than one leaf.
             if (resolved is null ||
-                leafIndex < resolvedLeafIndex ||
-                leafIndex == resolvedLeafIndex &&
-                leafDecision.Value.SourceIndex < resolved.Value.SourceIndex)
+                leafDecision.Value.SourceIndex < resolved.Value.SourceIndex ||
+                leafDecision.Value.SourceIndex == resolved.Value.SourceIndex &&
+                leafIndex < resolvedLeafIndex)
             {
                 resolved = leafDecision;
                 resolvedLeafIndex = leafIndex;
