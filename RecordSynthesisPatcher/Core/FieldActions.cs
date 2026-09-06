@@ -43,7 +43,8 @@ public sealed class ForwardField<TRecord, TGetter, TValue>
         Func<TGetter, TValue> read,
         Action<TRecord, TValue> write,
         Func<TValue, bool> isDefault,
-        IEqualityComparer<TValue>? comparer = null)
+        IEqualityComparer<TValue>? comparer = null,
+        Func<TValue, bool>? canForward = null)
     {
         Name = name;
         Read = read;
@@ -53,6 +54,7 @@ public sealed class ForwardField<TRecord, TGetter, TValue>
         // original is an explicit clear/removal.
         IsDefault = isDefault;
         Comparer = comparer ?? EqualityComparer<TValue>.Default;
+        CanForward = canForward ?? (_ => true);
     }
 
     public string Name { get; }
@@ -60,6 +62,7 @@ public sealed class ForwardField<TRecord, TGetter, TValue>
     public Action<TRecord, TValue> Write { get; }
     public Func<TValue, bool> IsDefault { get; }
     public IEqualityComparer<TValue> Comparer { get; }
+    public Func<TValue, bool> CanForward { get; }
 }
 
 public sealed class MergeField<TRecord, TGetter, TEntry>

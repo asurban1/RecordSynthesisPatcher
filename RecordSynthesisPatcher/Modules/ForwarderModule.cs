@@ -40,6 +40,7 @@ public sealed class ForwarderModule : PatcherModule, IForwardingActionModule
                 item,
                 field.Read,
                 field.Comparer,
+                field.CanForward,
                 out sourceValue,
                 out sourceIndex))
         {

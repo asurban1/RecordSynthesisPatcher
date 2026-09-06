@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Mutagen.Bethesda.Plugins;
 using Mutagen.Bethesda.Plugins.Records;
+using Mutagen.Bethesda.Skyrim;
 using RecordSynthesisPatcher.Settings;
 
 namespace RecordSynthesisPatcher.Core;
@@ -49,7 +50,10 @@ public static partial class FieldRegistry
             read,
             write,
             isDefault,
-            comparer);
+            comparer,
+            IgnoresBlankForwarding<TGetter>()
+                ? value => !IsBlank(value)
+                : null);
 
         foreach (var forwarder in forwarders)
         {
@@ -100,6 +104,18 @@ public static partial class FieldRegistry
 
     private static bool IsDefault<T>(T value) =>
         EqualityComparer<T>.Default.Equals(value, default!);
+
+    // CELL and WRLD deliberately do not recover blank/null branch values.
+    // This remains narrower than IsDefault: zero-valued structs and numbers
+    // are still meaningful forwarding candidates.
+    private static bool IsBlank<T>(T value) =>
+        value is null ||
+        value is string text && string.IsNullOrWhiteSpace(text) ||
+        value is FormKey formKey && formKey.IsNull;
+
+    private static bool IgnoresBlankForwarding<TGetter>() =>
+        typeof(TGetter) == typeof(ICellGetter) ||
+        typeof(TGetter) == typeof(IWorldspaceGetter);
 
     private static void AddMerge<TRecord, TGetter, TEntry>(
         ICollection<IFieldBinding> bindings,

@@ -29,6 +29,7 @@ internal static class BranchValueResolver
         RecordWorkItem<TRecord, TGetter> item,
         Func<TGetter, TValue> read,
         IEqualityComparer<TValue> comparer,
+        Func<TValue, bool> canSelect,
         out TValue value,
         out int sourceIndex)
         where TRecord : class, IMajorRecord, TGetter
@@ -37,7 +38,8 @@ internal static class BranchValueResolver
         BranchValueResolution<TValue> resolution = Resolve(
             item.GetResolutionTopology(),
             plugin => read(item.GetRecord(plugin)),
-            comparer);
+            comparer,
+            canSelect);
 
         value = resolution.Value;
         sourceIndex = resolution.SourceIndex;
@@ -56,7 +58,8 @@ internal static class BranchValueResolver
     internal static BranchValueResolution<TValue> Resolve<TValue>(
         BranchResolutionTopology topology,
         Func<ModKey, TValue> read,
-        IEqualityComparer<TValue> comparer)
+        IEqualityComparer<TValue> comparer,
+        Func<TValue, bool>? canSelect = null)
     {
         TValue winnerValue = read(topology.Plugins[topology.WinnerIndex]);
         if (topology.Plugins.Length < 3)
@@ -139,7 +142,10 @@ internal static class BranchValueResolver
             {
                 // A root-valued decision closes its own descendant path. It
                 // cannot erase a meaningful value surviving independently.
-                if (comparer.Equals(decision.Value, rootValue))
+                // An ineligible value behaves the same way: it closes only
+                // its own path and cannot outrank another branch's value.
+                if (comparer.Equals(decision.Value, rootValue) ||
+                    canSelect is not null && !canSelect(decision.Value))
                     continue;
 
                 if (leafDecision is null ||
