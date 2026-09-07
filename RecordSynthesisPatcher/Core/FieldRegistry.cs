@@ -125,7 +125,8 @@ public static partial class FieldRegistry
         Func<TEntry, FormKey> getKey,
         Action<TRecord> clear,
         Action<TRecord, TEntry> add,
-        IReadOnlyList<IMergingActionModule> mergers)
+        IReadOnlyList<IMergingActionModule> mergers,
+        bool preserveMultiplicity = false)
         where TRecord : class, IMajorRecord, TGetter
         where TGetter : class, IMajorRecordGetter
     {
@@ -138,7 +139,8 @@ public static partial class FieldRegistry
             entry => getKey(entry),
             key => key is FormKey formKey && !formKey.IsNull,
             clear,
-            add);
+            add,
+            preserveMultiplicity);
 
         foreach (var merger in mergers)
         {

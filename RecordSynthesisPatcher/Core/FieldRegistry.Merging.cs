@@ -174,7 +174,8 @@ public static partial class FieldRegistry
                 record.Items ??= new ExtendedList<ContainerEntry>();
                 record.Items.Add(entry.DeepCopy());
             },
-            mergers);
+            mergers,
+            preserveMultiplicity: true);
 
         AddMerge<IFormList, IFormListGetter, IFormLinkGetter<ISkyrimMajorRecordGetter>>(
             bindings, settings.FLST.ItemsMerge, "FLST.Items",

@@ -75,7 +75,8 @@ public sealed class MergeField<TRecord, TGetter, TEntry>
         Func<TEntry, object?> getKey,
         Func<object?, bool> isValidKey,
         Action<TRecord> clear,
-        Action<TRecord, TEntry> add)
+        Action<TRecord, TEntry> add,
+        bool preserveMultiplicity = false)
     {
         Name = name;
         Read = read;
@@ -83,6 +84,7 @@ public sealed class MergeField<TRecord, TGetter, TEntry>
         IsValidKey = isValidKey;
         Clear = clear;
         Add = add;
+        PreserveMultiplicity = preserveMultiplicity;
     }
 
     public string Name { get; }
@@ -91,6 +93,7 @@ public sealed class MergeField<TRecord, TGetter, TEntry>
     public Func<object?, bool> IsValidKey { get; }
     public Action<TRecord> Clear { get; }
     public Action<TRecord, TEntry> Add { get; }
+    public bool PreserveMultiplicity { get; }
 }
 
 public sealed class FlagMergeField<TRecord, TGetter>

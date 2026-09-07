@@ -34,11 +34,19 @@ public sealed class MergerModule : PatcherModule, IMergingActionModule
         // authoritative, excluding only explicit removal decisions.
         if (field.Read(item.Winner) is { } winningEntries)
         {
+            Dictionary<object, int>? occurrences = field.PreserveMultiplicity
+                ? new Dictionary<object, int>()
+                : null;
+
             foreach (TEntry entry in winningEntries)
             {
                 object? key = field.GetKey(entry);
-                if (!field.IsValidKey(key) || !changes.Removals.Contains(key!))
+                if (!field.IsValidKey(key) ||
+                    !changes.Removals.Contains(
+                        GetResolutionKey(key!, occurrences)))
+                {
                     field.Add(patchRecord, entry);
+                }
             }
         }
 
@@ -93,6 +101,10 @@ public sealed class MergerModule : PatcherModule, IMergingActionModule
         foreach (var context in item.Contexts)
         {
             var map = new Dictionary<object, OrderedEntry<TEntry>>();
+            Dictionary<object, int>? occurrences = field.PreserveMultiplicity
+                ? new Dictionary<object, int>()
+                : null;
+
             if (field.Read(context.Record) is { } entries)
             {
                 for (int index = 0; index < entries.Count; index++)
@@ -102,11 +114,17 @@ public sealed class MergerModule : PatcherModule, IMergingActionModule
                     if (!field.IsValidKey(key))
                         continue;
 
-                    // Presence merging is keyed by FormKey. Retain the first
-                    // duplicate for a potential addition and preserve all
-                    // winner duplicates during a no-removal rebuild.
-                    map.TryAdd(key!, new OrderedEntry<TEntry>(entry, index));
-                    allKeys.Add(key!);
+                    object resolutionKey = GetResolutionKey(
+                        key!, occurrences);
+
+                    // Ordinary collections retain their historical presence
+                    // behavior. Multiplicity-aware fields assign each repeated
+                    // base key its own occurrence so additions and removals can
+                    // be resolved independently.
+                    map.TryAdd(
+                        resolutionKey,
+                        new OrderedEntry<TEntry>(entry, index));
+                    allKeys.Add(resolutionKey);
                 }
             }
 
@@ -163,6 +181,18 @@ public sealed class MergerModule : PatcherModule, IMergingActionModule
         return new MergeChanges<TEntry>(additions, removals);
     }
 
+    private static object GetResolutionKey(
+        object baseKey,
+        Dictionary<object, int>? occurrences)
+    {
+        if (occurrences is null)
+            return baseKey;
+
+        occurrences.TryGetValue(baseKey, out int occurrence);
+        occurrences[baseKey] = occurrence + 1;
+        return new EntryOccurrenceKey(baseKey, occurrence);
+    }
+
     private static void LogChanges<TRecord, TGetter>(
         RecordWorkItem<TRecord, TGetter> item,
         string field,
@@ -184,6 +214,10 @@ public sealed class MergerModule : PatcherModule, IMergingActionModule
         Dictionary<object, OrderedEntry<TEntry>> Entries);
 
     private sealed record OrderedEntry<TEntry>(TEntry Entry, int Order);
+
+    private readonly record struct EntryOccurrenceKey(
+        object BaseKey,
+        int Occurrence);
 
     private sealed record Addition<TEntry>(
         TEntry Entry,
