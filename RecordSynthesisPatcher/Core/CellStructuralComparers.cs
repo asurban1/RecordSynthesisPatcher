@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Mutagen.Bethesda.Skyrim;
 using Noggog;
@@ -63,7 +64,13 @@ internal sealed class CellMaxHeightDataComparer :
         ICellMaxHeightDataGetter? right)
     {
         if (ReferenceEquals(left, right)) return true;
-        if (left is null || right is null || left.Offset != right.Offset)
+
+        // MHDT is binary data, and xEdit treats the bit pattern of its float
+        // offset as significant. In particular, +0.0 and -0.0 compare equal
+        // numerically but represent different plugin values.
+        if (left is null || right is null ||
+            BitConverter.SingleToInt32Bits(left.Offset) !=
+            BitConverter.SingleToInt32Bits(right.Offset))
             return false;
 
         IReadOnlyArray2d<byte> a = left.HeightMap;
