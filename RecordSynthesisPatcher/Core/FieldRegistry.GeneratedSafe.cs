@@ -19,7 +19,7 @@ public static partial class FieldRegistry
     {
         AddForward(b, settings.AACT.Color, "AACT.Color", (IActionRecordGetter r) => r.Color, (IActionRecord r, Color? v) => r.Color = v, IsDefault, f);
         AddForward(b, settings.ACHR.RagdollBipedData, "ACHR.RagdollBipedData", (IPlacedNpcGetter r) => r.RagdollBipedData, (IPlacedNpc r, ReadOnlyMemorySlice<byte>? v) => r.RagdollBipedData = v is null ? null : v.Value.ToArray(), IsDefault, f, NullableByteSliceComparer.Instance);
-        AddForward(b, settings.ACHR.RagdollData, "ACHR.RagdollData", (IPlacedNpcGetter r) => r.RagdollData, (IPlacedNpc r, ReadOnlyMemorySlice<byte>? v) => r.RagdollData = v is null ? null : v.Value.ToArray(), IsDefault, f, NullableByteSliceComparer.Instance);
+        AddForward(b, settings.ACHR.RagdollData, "ACHR.RagdollData", (IPlacedNpcGetter r) => r.RagdollData, (IPlacedNpc r, ReadOnlyMemorySlice<byte>? v) => r.RagdollData = v is null ? null : v.Value.ToArray(), IsDefault, f, RagdollDataComparer.Instance);
         AddDescription<IActivator, IActivatorGetter>(b, settings.ACTI.ActivateTextOverride, "ACTI.ActivateTextOverride", r => r.ActivateTextOverride, (r, v) => r.ActivateTextOverride = v, f);
         AddForwardLink(b, settings.ACTI.ActivationSound, "ACTI.ActivationSound", (IActivatorGetter r) => r.ActivationSound.FormKey, (IActivator r, FormKey v) => r.ActivationSound.SetTo(v), f);
         AddForwardLink(b, settings.ACTI.InteractionKeyword, "ACTI.InteractionKeyword", (IActivatorGetter r) => r.InteractionKeyword.FormKey, (IActivator r, FormKey v) => r.InteractionKeyword.SetTo(v), f);
@@ -602,7 +602,7 @@ public static partial class FieldRegistry
         AddForward(b, settings.REFR.BoundData, "REFR.BoundData", (IPlacedObjectGetter r) => r.BoundHalfExtents, (IPlacedObject r, P3Float? v) => r.BoundHalfExtents = v, IsDefault, f);
         AddForward(b, settings.REFR.DistantLodData, "REFR.DistantLodData", (IPlacedObjectGetter r) => r.DistantLodData, (IPlacedObject r, ReadOnlyMemorySlice<byte>? v) => r.DistantLodData = v is null ? null : v.Value.ToArray(), IsDefault, f, NullableByteSliceComparer.Instance);
         AddForward(b, settings.REFR.RagdollBipedData, "REFR.RagdollBipedData", (IPlacedObjectGetter r) => r.RagdollBipedData, (IPlacedObject r, ReadOnlyMemorySlice<byte>? v) => r.RagdollBipedData = v is null ? null : v.Value.ToArray(), IsDefault, f, NullableByteSliceComparer.Instance);
-        AddForward(b, settings.REFR.RagdollData, "REFR.RagdollData", (IPlacedObjectGetter r) => r.RagdollData, (IPlacedObject r, ReadOnlyMemorySlice<byte>? v) => r.RagdollData = v is null ? null : v.Value.ToArray(), IsDefault, f, NullableByteSliceComparer.Instance);
+        AddForward(b, settings.REFR.RagdollData, "REFR.RagdollData", (IPlacedObjectGetter r) => r.RagdollData, (IPlacedObject r, ReadOnlyMemorySlice<byte>? v) => r.RagdollData = v is null ? null : v.Value.ToArray(), IsDefault, f, RagdollDataComparer.Instance);
         AddForward(b, settings.REFR.Unknown, "REFR.Unknown", (IPlacedObjectGetter r) => r.Unknown, (IPlacedObject r, short v) => r.Unknown = v, IsDefault, f);
         AddForward(b, settings.REFR.XCVL, "REFR.XCVL", (IPlacedObjectGetter r) => r.XCVL, (IPlacedObject r, ReadOnlyMemorySlice<byte>? v) => r.XCVL = v is null ? null : v.Value.ToArray(), IsDefault, f, NullableByteSliceComparer.Instance);
         AddForward(b, settings.REFR.XCZA, "REFR.XCZA", (IPlacedObjectGetter r) => r.XCZA, (IPlacedObject r, ReadOnlyMemorySlice<byte>? v) => r.XCZA = v is null ? null : v.Value.ToArray(), IsDefault, f, NullableByteSliceComparer.Instance);
