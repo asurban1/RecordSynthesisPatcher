@@ -2836,6 +2836,13 @@ public sealed partial class RefrForwardingSettings
     [SynthesisOrder]
     public bool Lock = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Map Marker Flags — [ MERGE ]")]
+    public bool MapMarkerFlagsMerge = false;
+    [SynthesisOrder]
+    public bool MapMarkerName = false;
+    [SynthesisOrder]
+    public bool MapMarkerType = false;
+    [SynthesisOrder]
     public bool MultiBoundReference = false;
     [SynthesisOrder]
     public bool Owner = false;

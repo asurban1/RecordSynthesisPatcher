@@ -57,6 +57,11 @@ a plugin deliberately changed the field to that value.
 Fields are organized alphabetically by record type and field name. Merge
 options are marked with **— [ MERGE ]** in the settings.
 
+REFR map markers expose separate **Map Marker Name**, **Map Marker Type**, and
+**Map Marker Flags — [ MERGE ]** options. Name and type follow the usual forwarding
+rules independently; map flags merge bit by bit. Changing one marker field does
+not replace the other marker fields. All three options are disabled by default.
+
 ## Configuration
 
 All fields are disabled by default. Enable only the fields you want the patcher to evaluate.
