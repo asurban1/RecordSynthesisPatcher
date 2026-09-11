@@ -27,6 +27,7 @@ public static partial class FieldRegistry
         RegisterFlagMerging(bindings, settings, flagMergers);
         RegisterGeneratedSafeFlags(bindings, settings, flagMergers);
         RegisterMapMarker(bindings, settings, forwarders, flagMergers);
+        RegisterWeaponCriticalData(bindings, settings, forwarders);
 
         return bindings;
     }

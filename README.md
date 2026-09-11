@@ -62,6 +62,11 @@ REFR map markers expose separate **Map Marker Name**, **Map Marker Type**, and
 rules independently; map flags merge bit by bit. Changing one marker field does
 not replace the other marker fields. All three options are disabled by default.
 
+WEAP Critical Data provides independent forwarding options for **Damage**,
+**% Mult**, **On Death**, and **Effect**. Zero damage, a false On Death value,
+and a null effect are meaningful changes. Each option preserves the other
+critical-data members and is disabled by default.
+
 ## Configuration
 
 All fields are disabled by default. Enable only the fields you want the patcher to evaluate.

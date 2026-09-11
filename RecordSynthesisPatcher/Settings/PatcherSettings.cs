@@ -3542,6 +3542,18 @@ public sealed partial class WeapForwardingSettings
     [SynthesisOrder]
     public bool BlockBashImpact = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Critical Data — Damage")]
+    public bool CriticalDamage = false;
+    [SynthesisOrder]
+    [SynthesisSettingName("Critical Data — Effect")]
+    public bool CriticalEffect = false;
+    [SynthesisOrder]
+    [SynthesisSettingName("Critical Data — On Death")]
+    public bool CriticalOnDeath = false;
+    [SynthesisOrder]
+    [SynthesisSettingName("Critical Data — % Mult")]
+    public bool CriticalPercentMult = false;
+    [SynthesisOrder]
     public bool Description = false;
     [SynthesisOrder]
     public bool DetectionSoundLevel = false;
