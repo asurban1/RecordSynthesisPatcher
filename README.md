@@ -69,6 +69,14 @@ critical-data members and is disabled by default.
 
 ## Configuration
 
+**WRLD → World Map Data** forwards the complete MNAM block: usable dimensions,
+northwest/southeast cell coordinates, and camera minimum height, maximum height,
+and initial pitch. These values stay together from one source. Forwarding occurs
+only when the winning block matches the original; a changed winning block is
+preserved. The WRLD rule excluding blank/null forwarding candidates still applies.
+This option is disabled by default and is separate from World Map Cell Offset
+and World Map Offset Scale.
+
 All fields are disabled by default. Enable only the fields you want the patcher to evaluate.
 
 The patcher is deliberately configurable rather than automatic: different load orders can require different conflict-resolution choices. Review the generated patch in xEdit when adding new field groups or making major changes to your load order.

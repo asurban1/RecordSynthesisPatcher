@@ -462,6 +462,11 @@ public static partial class FieldRegistry
         AddForward(b, s.LodWaterHeight, "WRLD.LodWaterHeight", (IWorldspaceGetter r) => r.LodWaterHeight, (IWorldspace r, float? v) => r.LodWaterHeight = v, IsDefault, f);
         AddForwardLink(b, s.Music, "WRLD.Music", (IWorldspaceGetter r) => r.Music.FormKey, (IWorldspace r, FormKey v) => r.Music.SetTo(v), f);
         AddForwardLink(b, s.Water, "WRLD.Water", (IWorldspaceGetter r) => r.Water.FormKey, (IWorldspace r, FormKey v) => r.Water.SetTo(v), f);
+        AddForward<IWorldspace, IWorldspaceGetter, IWorldspaceMapGetter?>(
+            b, s.WorldMapData, "WRLD.WorldMapData",
+            r => r.MapData,
+            (r, value) => r.MapData = value?.DeepCopy(),
+            value => value is null, f, WorldspaceMapComparer.Instance);
         AddForward(b, s.WorldMapOffsetScale, "WRLD.WorldMapOffsetScale", (IWorldspaceGetter r) => r.WorldMapOffsetScale, (IWorldspace r, float v) => r.WorldMapOffsetScale = v, IsDefault, f);
     }
 }

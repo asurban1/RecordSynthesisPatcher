@@ -3646,6 +3646,8 @@ public sealed partial class WrldForwardingSettings
     [SynthesisOrder]
     public bool WorldMapCellOffset = false;
     [SynthesisOrder]
+    public bool WorldMapData = false;
+    [SynthesisOrder]
     public bool WorldMapOffsetScale = false;
 }
 
