@@ -67,6 +67,11 @@ WEAP Critical Data provides independent forwarding options for **Damage**,
 and a null effect are meaningful changes. Each option preserves the other
 critical-data members and is disabled by default.
 
+WEAP Game Data provides independent forwarding options for **Value**, **Weight**,
+and **Damage** (base weapon damage, not Critical Data damage). Each field follows
+the usual forwarding rules, including meaningful zero values, while preserving
+changed winning values in the other fields. All three options default to off.
+
 ## Configuration
 
 **WRLD → World Map Data** forwards the complete MNAM block: usable dimensions,

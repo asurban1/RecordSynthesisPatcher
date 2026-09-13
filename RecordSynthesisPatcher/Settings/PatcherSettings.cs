@@ -3568,6 +3568,15 @@ public sealed partial class WeapForwardingSettings
     [SynthesisOrder]
     public bool FirstPersonModel = false;
     [SynthesisOrder]
+    [SynthesisSettingName("Game Data — Damage")]
+    public bool GameDataDamage = false;
+    [SynthesisOrder]
+    [SynthesisSettingName("Game Data — Value")]
+    public bool GameDataValue = false;
+    [SynthesisOrder]
+    [SynthesisSettingName("Game Data — Weight")]
+    public bool GameDataWeight = false;
+    [SynthesisOrder]
     public bool IdleSound = false;
     [SynthesisOrder]
     public bool ImpactDataSet = false;
