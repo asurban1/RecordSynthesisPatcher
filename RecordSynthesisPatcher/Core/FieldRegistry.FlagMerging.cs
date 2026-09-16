@@ -18,7 +18,11 @@ public static partial class FieldRegistry
             "CELL.Flags",
             record => (ulong)record.Flags,
             (record, value) => record.Flags = (Cell.Flag)value,
-            EnumMask<Cell.Flag>(),
+            // Interior/exterior is structural, not an independent mergeable
+            // flag. Preserve the winner's classification and CELL hierarchy.
+            // Merging an older removal here can turn a valid interior winner
+            // into an exterior-flagged record inside an interior CELL group.
+            EnumMask<Cell.Flag>() & ~(ulong)Cell.Flag.IsInteriorCell,
             mergers);
 
         AddFlagMerge<INpc, INpcGetter>(

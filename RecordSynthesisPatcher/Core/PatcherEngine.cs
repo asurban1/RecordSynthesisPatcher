@@ -98,6 +98,8 @@ public sealed class PatcherEngine
         foreach (var module in modules)
             module.Complete(_services);
 
+        CellOutputValidator.Validate(_services.PatchMod);
+
         Console.WriteLine(
             $"Cached plugin-chain topologies: {_services.Graphs.CachedTopologyCount:N0}");
         Console.WriteLine($"Total elapsed: {stopwatch.Elapsed}");

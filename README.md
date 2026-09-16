@@ -36,6 +36,7 @@ No manual download, Visual Studio project setup, or compilation is necessary.
   independent conflict branch.
 - Merges supported collections such as keywords, leveled entries, linked references, and region data.
 - Handles supported record flags bit by bit so additions and removals can both be preserved.
+- Preserves the winning CELL's structural interior/exterior flag instead of merging it.
 - Treats blank and null values as real values instead of assuming they are defaults.
 - Respects intentional changes and removals made by descendant plugins.
 - Registers compatible fields across every supported record type that exposes them.
@@ -73,6 +74,14 @@ the usual forwarding rules, including meaningful zero values, while preserving
 changed winning values in the other fields. All three options default to off.
 
 ## Configuration
+
+CELL flag merging excludes **Is Interior Cell**: this bit describes the record's
+structural placement and is preserved from the winner. Other supported CELL
+flags still merge normally. RSP checks all output interior CELL groups before
+writing and stops with the affected FormKey if a CELL is missing this bit.
+This also checks cells inherited from a preceding patcher. Regenerate older RSP
+outputs after updating; the check does not repair existing plugins or validate
+Synthesis's subsequent splitting/postprocessing.
 
 **WRLD → World Map Data** forwards the complete MNAM block: usable dimensions,
 northwest/southeast cell coordinates, and camera minimum height, maximum height,
